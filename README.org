@@ -1,0 +1,7 @@
+* About
+
+Sorting one stack using another, with limited operation and done using the least number of instructions
+
+* TODOs [0/1]
+
++ [ ] Document on Quick Sort and Selection Sort

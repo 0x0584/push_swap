@@ -1,0 +1,12 @@
+*.o
+NUL
+.DS_Store
+a.out
+log-*.txt
+*.tar
+other/
+*.zip
+/TAGS
+*.a
+*.exe
+
