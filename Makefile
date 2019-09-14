@@ -1,7 +1,5 @@
-
 NAME	= push_swap
 LIBFT	= -Ilibft -Llibft -lft
-
 
 SRCDIR	= src
 DEPDIR	= include
