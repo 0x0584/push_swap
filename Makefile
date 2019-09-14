@@ -7,6 +7,7 @@ SRCDIR	= src
 DEPDIR	= include
 OBJDIR	= obj
 
+
 SRCS	:= $(shell find $(SRCDIR) -type f -name '*.c')
 DEPS	:= $(shell find $(DEPDIR) -type f -name '*.h')
 OBJS	:= $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
