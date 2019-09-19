@@ -2,6 +2,23 @@
 
 Sorting one stack using another, with limited operation and done using the least number of instructions
 
-* TODOs [0/1]
+* Algorithm
 
-+ [ ] Document on Quick Sort and Selection Sort
+Some notes before reading the algorithm
+
++ /A stack is a sub stack of its self/
++ /Push send the element to the end of the stack/
+
+This algorithm uses a tweaked quick-sort, where we divide the *stack A* into range classes, *sub stack*, based on the /mid/ value of each class.
+
+_Details of the Algorithm_
+
+1. find the /mid/ value of the whole array
+2. use that /mid/ value to split *stack A* into half, where all values    /less than mid/ form a *sub stack* which we *push to stack B*
+3. update the /mid/ value and repeat 2 until /no elements are left/ or /only two are left/
+4. apply the same process backwards on each *sub stack*, since they're already sorted based on range, push elements back to *stack A*, only now we push the value /above the mid/ value
+
+* TODOs [1/1]
+
++ [X] Document on Quick Sort and Selection Sort
++ [ ] Implement the Algorithm
