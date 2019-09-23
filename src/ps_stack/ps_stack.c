@@ -1,7 +1,7 @@
 
 #include "ps_stack.h"
 
-t_ps_stack		ps_stack_new(void)
+t_pstack		ps_stack_new(void)
 {
 	t_stack *stk;
 
@@ -15,24 +15,26 @@ t_ps_stack		ps_stack_new(void)
 	return (stk);
 }
 
-t_ps_stack		ps_stack_init(int argc, char **argv)
+t_pstack		ps_stack_init(int argc, char **argv)
 {
-	t_ps_stack	stk;
+	t_pstack	stk;
 
 	if (argc < 2)
 		return (NULL);
 	while (argc-- > 2)
+		;
+	stk = NULL;
 	return stk;
 }
 
-bool			ps_stack_isempty(t_ps_stack *stk)
+bool			ps_stack_isempty(t_pstack stk)
 {
 	if (!stk)
 		return false;
-	return (stk->length == 0);
+	return (stk->chunk->size == 0);
 }
 
-void			ps_stack_dosort(t_ps_stack *stk)
+void			ps_stack_dosort(t_pstack stk)
 {
 	(void)stk;
 }
