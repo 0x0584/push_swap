@@ -1,4 +1,3 @@
-
 #include "ps_stack.h"
 
 t_pstack		ps_stack_new(void)
