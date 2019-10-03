@@ -1,39 +1,34 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   stack.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/03 04:53:40 by archid-           #+#    #+#             */
+/*   Updated: 2019/10/03 05:37:29 by archid-          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ps_stack.h"
 
-t_pstack		ps_stack_new(void)
+t_ps		ps_alloc(size_t size)
 {
-	t_stack *stk;
+	t_ps foo;
 
-	if (!(stk = ALLOC(t_stack *, 1, sizeof(t_stack))))
+	if (!(foo = ALLOC(t_ps, 1, sizeof(struct s_push_swap_stack))))
 		return (NULL);
-	if (!(stk->chunk = ALLOC(t_chunk *, 1, sizeof(t_chunk))))
+	if (!(foo->stack = ALLOC(t_s64 *, size, sizeof(t_s64))))
 	{
-		free(stk);
+		free(foo);
 		return (NULL);
 	}
-	return (stk);
+	foo->size = size;
+	foo->head = foo->stack;
+	return foo;
 }
 
-t_pstack		ps_stack_init(int argc, char **argv)
+void		ps_del(t_ps *aps)
 {
-	t_pstack	stk;
 
-	if (argc < 2)
-		return (NULL);
-	while (argc-- > 2)
-		;
-	stk = NULL;
-	return stk;
-}
-
-bool			ps_stack_isempty(t_pstack stk)
-{
-	if (!stk)
-		return false;
-	return (stk->chunk->size == 0);
-}
-
-void			ps_stack_dosort(t_pstack stk)
-{
-	(void)stk;
 }

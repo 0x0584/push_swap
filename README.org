@@ -2,6 +2,19 @@
 
 Sorting one stack using another, with limited operation and done using the least number of instructions
 
+* Data structure
+
+I would have a stack with usual push/pop & rotation. But I have to choose an ADT:
+
+- List :: like singulary or doubly linked lists...
+- Array :: this circular array looks promising since it would offer in-place modifcation of elements
+  - if implemented as I think of it now, like creating pointers to indicate /turn/ when splitting the Stack A
+  - those pointers would make things easy, to devide the things into an /onion-like structure/
+
+** Terminology
+
+turn is each time wen find mids and split.. we need to keep track of those to know how the /onion-like structure/ works
+
 * Algorithm
 
 Some notes before reading the algorithm
@@ -17,7 +30,6 @@ _Details of the Algorithm_
 2. use that /mid/ value to split *stack A* into half, where all values    /less than mid/ form a *sub stack* which we *push to stack B*
 3. update the /mid/ value and repeat 2 until /no elements are left/ or /only two are left/
 4. apply the same process backwards on each *sub stack*, since they're already sorted based on range, push elements back to *stack A*, only now we push the value /above the mid/ value
-
 
 * Improved version
 ** notes

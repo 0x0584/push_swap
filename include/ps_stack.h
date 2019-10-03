@@ -1,37 +1,30 @@
-#ifndef PS_STACK_H
-# define PS_STACK_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ps_stack.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/03 04:49:54 by archid-           #+#    #+#             */
+/*   Updated: 2019/10/03 05:34:46 by archid-          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-# include "dlist.h"
+#ifndef STACK_H
+# define STACK_H
 
-/* NOTE: now how to set cchunks? well i will have a list of lists
- * a chunk is just an array of two pointers on elements of the list */
+# include "libft.h"
 
-/* TODO: find a way to fill the chunk */
-/* TODO: create a li */
-typedef struct		s_list_chunk
+typedef struct s_push_swap_stack
 {
-	t_dlist				*head;
-	t_dlist				*tail;
-	ssize_t				mid;
-	size_t				size;
-}					t_chunk;
+	t_s64			*stack;
+	t_s64			*head;
+	t_u32			size;
+}				*t_ps;
 
-typedef struct		s_ps_stack
-{
-	struct	s_ps_stack	*next;
-	struct	s_ps_stack	*prev;
-	t_chunk				*chunk;
-}					t_stack, *t_pstack;
+// FIXME: this should be in src/game/setup.c
+// void			ps_init(t_ps *stack_a, t_ps *stack_b, int ac, char **av);
 
-t_pstack					ps_stack_init(int argc, char **argv);
-t_pstack					ps_stack_new(void);
-bool						ps_stack_isempty(t_pstack stk);
-void						ps_stack_dosort(t_pstack stk);
-
-void						ps_psh(t_pstack dest, t_pstack src,
-										t_dlist *node);
-void						ps_swp(t_pstack stk);
-void						ps_rev(t_pstack stk);
-void						ps_rrev(t_pstack stk);
+t_ps		ps_alloc(size_t size);
 
 #endif
