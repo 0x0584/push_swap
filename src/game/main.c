@@ -1,30 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ps_stack.h                                         :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/03 04:49:54 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/03 05:34:46 by archid-          ###   ########.fr       */
+/*   Created: 2019/10/03 18:38:48 by archid-           #+#    #+#             */
+/*   Updated: 2019/10/03 18:45:35 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STACK_H
-# define STACK_H
+#include "stack.h"
 
-# include "libft.h"
-
-typedef struct s_push_swap_stack
+int main(int argc, char *argv[])
 {
-	t_s64			*stack;
-	t_s64			*head;
-	t_u32			size;
-}				*t_ps;
+    t_ps foo = ps_alloc(30);
 
-// FIXME: this should be in src/game/setup.c
-// void			ps_init(t_ps *stack_a, t_ps *stack_b, int ac, char **av);
-
-t_ps		ps_alloc(size_t size);
-
-#endif
+    return 0;
+}
