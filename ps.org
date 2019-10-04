@@ -11,12 +11,13 @@ I must do something!! Graphs are l9wada! but first ,I have to finish the followi
 + [ ] push_swap
 + [ ] visualizer
 
-* IN-PROGRESS building the checker [0/1]
+* IN-PROGRESS building the checker [1/1]
 DEADLINE: <2019-10-05 Sat>
 :PROPERTIES:
 :Effort:   3d 0:00
 :END:
 :LOGBOOK:
+CLOCK: [2019-10-03 Thu 22:03]
 CLOCK: [2019-10-03 Thu 03:51]--[2019-10-03 Thu 16:35] => 12:44
 CLOCK: [2019-10-03 Thu 03:47]--[2019-10-03 Thu 03:51] =>  0:04
 :END:
@@ -31,9 +32,10 @@ I need to work at least 8hrs/day on this so that O can finish it once and for al
 - [ ] build a simple instruction input system
 - [ ] test the algorithm on it
 
-** IN-PROGRESS import libft from gitlab
+** DONE import libft from gitlab
 DEADLINE: <2019-10-03 Thu 00:00>
 
+- State "DONE"       from "IN-PROGRESS" [2019-10-03 Thu 22:03]
 - State "IN-PROGRESS" from "TODO"       [2019-10-02 Wed 17:44]
 
 need to fix some errors of making before setting this to DONE! <2019-10-03 Thu 00:52> now I'm working on the checker!

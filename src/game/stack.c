@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 04:53:40 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/03 19:23:31 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/04 02:05:46 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,20 +40,55 @@ void		ps_del(t_ps *aps)
 
 void		ps_push(t_ps ps, t_val e)
 {
-	if (ps && ps->mark > ps->stack)
+	if (!ps || ps->mark <= ps->stack || ps->mark > ps->tail)
 	{
-		*(ps->mark--) = e;
+		ft_putendl_fd("warning: push failed. stack was full!", 2);
 		return ;
 	}
-	ft_putendl_fd("warning: push failed. stack was full!", 2);
+	*(ps->mark--) = e;
 }
 
 t_val		ps_pop(t_ps ps)
 {
-	if (ps && ps->mark <= ps->tail)
-		return *(ps->mark++);
-	ft_putendl_fd("warning: pop failed. stack was empty!", 2);
-	return (ERROR_POP);
+	if (!ps || ps->mark > ps->tail)
+	{
+		ft_putendl_fd("warning: pop failed. stack was empty!", 2);
+		return (ERROR_POP);
+	}
+	return (*(++ps->mark));
 }
 
-bool		ps_isempty(t_ps ps);
+bool		ps_isempty(t_ps ps)
+{
+	return (ps->mark == ps->tail);
+}
+
+void		ps_dump(t_ps ps)
+{
+	size_t i;
+	size_t length;
+
+	if (!ps || ps->mark > ps->tail || ps->mark <= ps->stack)
+	{
+		ft_putendl_fd(ps ? "warning: dump failed. `mark' is out of bound!"
+							: "fatal: arg(s) expected was NULL!", 2);
+		return ;
+	}
+	if (ps_isempty(ps))
+	{
+		ft_putendl_fd("note: cannot dump empty stack.", 2);
+		return ;
+	}
+	ft_putstr("i: ");
+	ft_putnumber((ps->tail - ps->stack) + 1);
+	ft_putstr(" - length: ");
+	ft_putnumber(length = (ps->tail - ps->mark));
+	ft_putendl("");
+	i = 0;
+	while (i++ < length)
+	{
+		ft_putnumber(ps->mark[i]);
+		ft_putendl("");
+	}
+	ft_putendl("");
+}

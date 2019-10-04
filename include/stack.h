@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 04:49:54 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/03 19:23:19 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/03 22:43:34 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,10 @@ typedef struct	s_push_swap_stack
 /* FIXME: this should be in src/game/setup.c */
 /* void			ps_init(t_ps *stack_a, t_ps *stack_b, int ac, char **av); */
 
+/* main stack functions */
 t_ps		ps_alloc(size_t size);
 void		ps_del(t_ps *aps);
+void		ps_dump(t_ps ps);
 
 /* basic stack opeations */
 void		ps_push(t_ps ps, t_val e);
