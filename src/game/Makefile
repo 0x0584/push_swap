@@ -6,7 +6,7 @@
 #    By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/10/03 22:54:21 by archid-           #+#    #+#              #
-#    Updated: 2019/10/03 23:55:00 by archid-          ###   ########.fr        #
+#    Updated: 2019/10/04 02:15:33 by archid-          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -35,3 +35,7 @@ all:
 	@echo ""
 
 	$(CC) $(SRC) -o $(EXEC) $(LIBFT) $(LDFT) $(LDFLAGS)
+
+# IDEA: About Makefiles, the repo should have 3 repos, game, push_swap, checker.
+# each one has its own makefile, and the main makefile create two symbolic links
+# at the root of the repo: push_swap and checker.

@@ -6,13 +6,13 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 04:53:40 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/04 02:05:46 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/04 02:55:43 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "stack.h"
 
-t_ps		ps_alloc(size_t size)
+t_ps		ps_alloc(char label, size_t size)
 {
 	t_ps foo;
 
@@ -26,6 +26,8 @@ t_ps		ps_alloc(size_t size)
 	}
 	foo->tail = foo->stack + size;
 	foo->mark = foo->stack + size;
+	foo->orig = foo->stack + size;
+	foo->label = label;
 	return (foo);
 }
 
@@ -46,16 +48,21 @@ void		ps_push(t_ps ps, t_val e)
 		return ;
 	}
 	*(ps->mark--) = e;
+	ps->orig--;
 }
 
 t_val		ps_pop(t_ps ps)
 {
+	t_val foo;
+
 	if (!ps || ps->mark > ps->tail)
 	{
 		ft_putendl_fd("warning: pop failed. stack was empty!", 2);
 		return (ERROR_POP);
 	}
-	return (*(++ps->mark));
+	foo = *(++ps->mark);
+	ps->orig++;
+	return (foo);
 }
 
 bool		ps_isempty(t_ps ps)
@@ -79,11 +86,14 @@ void		ps_dump(t_ps ps)
 		ft_putendl_fd("note: cannot dump empty stack.", 2);
 		return ;
 	}
-	ft_putstr("i: ");
+
+	ft_putchar(ps->label);
+	ft_putstr(": [size = ");
 	ft_putnumber((ps->tail - ps->stack) + 1);
-	ft_putstr(" - length: ");
+	ft_putstr("] [length = ");
 	ft_putnumber(length = (ps->tail - ps->mark));
-	ft_putendl("");
+	ft_putendl("]");
+
 	i = 0;
 	while (i++ < length)
 	{
