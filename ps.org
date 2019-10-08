@@ -11,14 +11,17 @@ I must do something!! Graphs are l9wada! but first ,I have to finish the followi
 + [ ] push_swap
 + [ ] visualizer
 
-* IN-PROGRESS building the checker [1/1]
+* IN-PROGRESS checker [0/3]
 DEADLINE: <2019-10-05 Sat>
 :PROPERTIES:
-:Effort:   3d 0:00
+:Effort:   10:00
 :END:
 :LOGBOOK:
-CLOCK: [2019-10-03 Thu 22:03]
-CLOCK: [2019-10-03 Thu 03:51]--[2019-10-03 Thu 16:35] => 12:44
+CLOCK: [2019-10-08 Tue 02:38]
+CLOCK: [2019-10-08 Tue 01:21]--[2019-10-08 Tue 01:46] =>  0:25
+CLOCK: [2019-10-08 Tue 00:40]--[2019-10-08 Tue 01:21] =>  0:41
+CLOCK: [2019-10-03 Thu 22:03]--[2019-10-04 Fri 00:40] =>  2:37
+CLOCK: [2019-10-03 Thu 03:51]--[2019-10-03 Thu 11:35] =>  7:44
 CLOCK: [2019-10-03 Thu 03:47]--[2019-10-03 Thu 03:51] =>  0:04
 :END:
 
