@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 04:53:40 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/08 02:41:08 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/11 17:58:43 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,19 @@ t_val		ps_pop(t_ps ps)
 		return (ERROR_POP);
 	}
 	return (*(++ps->mark));
+}
+
+bool		ps_issorted(t_ps ps)
+{
+	t_val		*walk;
+
+	if (!ps)
+		return (false);
+	walk = ps->mark;
+	while (++walk != ps->tail)
+		if (*walk < *(walk + 1))
+			return (false);
+	return (true);
 }
 
 void		ps_dump(t_ps ps)

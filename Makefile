@@ -6,58 +6,47 @@
 #    By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/10/03 22:51:47 by archid-           #+#    #+#              #
-#    Updated: 2019/10/03 22:53:11 by archid-          ###   ########.fr        #
+#    Updated: 2019/10/11 18:02:34 by archid-          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
-NAME	= push_swap
-LIBFT	= -Ilibft -Llibft -lft
+# FIXME: try to use Gnu autotools
 
-SRCDIR	= src
-DEPDIR	= include
-OBJDIR	= obj
+# FIXME: modify other Makefiles
+# so that it warns if other that from this Makefilee.
+# this basically would be to call a rrule directly
 
-SRCS	:= $(shell find $(SRCDIR) -type f -name '*.c')
-DEPS	:= $(shell find $(DEPDIR) -type f -name '*.h')
-OBJS	:= $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
+FTDIR		= libft
+COREDIR		= core
+SRCDIR		= src
+CHECKER		= $(SRCDIR)/checker
+PUSH_SWAP	= push_swap
 
-CC	= gcc
-CFLAGS	= -Wall -Wextra -ggdb # -Werror
-LDFLAGS = -I$(DEPDIR) $(LIBFT)
+RENDU		= checker push_swap
 
-RM	= rm -rf
+all:
+	make -C $(COREDIR)
+	make -C $(CHECKER)
+	ln -s $(CHECKER)/checker checker
 
-all: setup $(NAME)
-	@echo -e "\ncompilation done."
-
-$(NAME): $(OBJS) $(DEPS)
-	@echo -e "\nlinking the executable.."
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LDFLAGS)
-
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c $< -o $@ $(LDFLAGS)
-
-setup:
-	@echo "making libft.."
-	@make -C ./libft/
-	@echo -e "\ncompiling object files.."
-
-test: all
-	./$(NAME)
+	# @make -C $(SRC_DIR)/$(PUSH_SWAP)
+	# @ln -s $(SRC_DIR)/$(PUSH_SWAP)/$(PUSH_SWAP) $(PUSH_SWAP)
 
 clean:
 	@echo -e "cleaning.."
-	@make -C ./libft/ clean
-	$(RM) $(OBJS)
+	@make -C $(COREDIR) clean
+	@make -C $(SRC_DIR)/$(CHECKER) clean
+	# @make -C $(SRC_DIR)/$(PUSH_SWAP) clean
+	@rm -f $(RENDU)
 	@echo ""
 
 fclean:
-	@echo -e "cleaning.."
-	@make -C ./libft/ fclean
-	$(RM) $(OBJS)
-	$(RM) $(OBJDIR)
-	$(RM) $(NAME)
+	@echo -e "cleaning everything.."
+	@make -C $(COREDIR) fclean
+	@make -C $(SRC_DIR)/$(CHECKER) fclean
+	# @make -C $(SRC_DIR)/$(PUSH_SWAP) fclean
+	@rm -f $(RENDU)
 	@echo ""
 
-re: fclean all
+re: fclean
+	@make

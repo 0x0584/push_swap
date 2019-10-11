@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 16:56:31 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/08 03:43:51 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/11 16:21:47 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,6 @@ void	ps_rot(t_ps stack, bool isup)
 	len = (size_t)PS_LENGTH(stack);
 	stack->mark++;				/* set mark into place */
 	poped = *(isup ? stack->mark : stack->tail);
-	/* ft_putnumber(PS_LENGTH(stack)); */
-	/* ft_putstr(" "); */
-	/* ft_putnumber(poped); */
-	/* getchar(); */
 	while (i < len)
 	{
 		if (isup)
@@ -76,4 +72,15 @@ void	ps_rot(t_ps stack, bool isup)
 	}
 	*(isup ? stack->tail : stack->mark) = poped;
 	stack->mark--;				/* set mark into place */
+}
+
+bool	is_op(const char *s)
+{
+	if (*s && s[1] && ft_strchr("psr", *s) == s && ft_strchr("absr", s[1]))
+	{
+		if (s[1] == 'r' && s[2] && ft_strchr("ab", s[2]) && !s[3])
+			return (true);
+		return (s[2] == '\0');
+	}
+	return (false);
 }
