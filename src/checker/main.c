@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 22:54:00 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/11 21:11:52 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/12 15:20:41 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,9 @@ int		exit_log(const char *s)
 
 /* this is teh checkers main */
 /* compile using
-   gcc -Wall -Wextra -ggdb src/checker/*.c core/*.c -o foo -Llibft -lft -Iinclude -Ilibft
+   gcc -Wall -Wextra -ggdb src/checker\/\*.c core\/\*.c -o foo -Llibft -lft -Iinclude -Ilibft
 */
+
 int main(int argc, char *argv[])
 {
 	t_ps	ps;

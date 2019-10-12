@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 04:53:40 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/11 17:58:43 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/12 15:18:57 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ void		ps_push(t_ps ps, t_val e)
 		ft_putendl_fd("warning: push failed. stack was full!", 2);
 		return ;
 	}
+	ft_putstr_fd("pushed(", 2);
+	ft_putnumber_fd(e, 2);
+	ft_putendl_fd(")", 2);
 	*ps->mark-- = e;
 }
 
@@ -57,6 +60,9 @@ t_val		ps_pop(t_ps ps)
 		ft_putendl_fd("warning: pop failed. stack was empty!", 2);
 		return (ERROR_POP);
 	}
+	ft_putstr_fd("poped(", 2);
+	ft_putnumber_fd(*(ps->mark + 1), 2);
+	ft_putendl_fd(")", 2);
 	return (*(++ps->mark));
 }
 

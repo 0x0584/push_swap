@@ -31,8 +31,8 @@ endif
 
 all: $(OBJS)
 	make $(FTDIR)
-	@rm $(NAME)
-	@ar rc $(NAME) $(shell find $(FTDIR) -name '*.o') $^
+	rm $(NAME)
+	ar rc $(NAME) $(shell find $(FTDIR) -name '*.o') $^
 
 %.o: %.c
 	$(CC) $< -o $@ $(LDFLAGS) $(LDFT)

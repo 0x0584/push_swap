@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/08 03:56:04 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/11 21:25:11 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/12 15:24:02 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ t_ps			read_args(int ac, char**av)
 	int		i;
 
 	i = 1;
-	stack = ps_alloc('A', (size_t)(ac - 1));
+	stack = ps_alloc('A', (size_t)ac);
 	/* NOTE: if any values is not a proper `int', we should
 	   stop, free everything and return NULL */
 	while (i < ac)

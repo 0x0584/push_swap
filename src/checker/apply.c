@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/11 04:55:25 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/11 16:09:26 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/12 17:10:01 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,6 @@ int		apply_which(const char *op, int *which)
 			|| (*op == 'r' && op[1] == 'r' && op[2] == 'r'))
 		*which = OP_TO_BOTH;
 	else
-		*which = WHICH_HELPER(op[1 + (op[1] == 'r')]);
+		*which = WHICH_HELPER(op[1 + (op[1] == 'r')]); /* BUG: WTF!! */
 	return (operation);
 }

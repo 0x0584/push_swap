@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 16:56:31 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/11 16:21:47 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/12 15:41:12 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,15 @@ void	ps_rot(t_ps stack, bool isup)
 	stack->mark--;				/* set mark into place */
 }
 
+#define END(s, i)					(s[i] == '\n' && s[i + 1] == '\0')
+
 bool	is_op(const char *s)
 {
-	if (*s && s[1] && ft_strchr("psr", *s) == s && ft_strchr("absr", s[1]))
+	if (*s && s[1] && ft_strchr("psr", *s) && ft_strchr("absr", s[1]))
 	{
-		if (s[1] == 'r' && s[2] && ft_strchr("ab", s[2]) && !s[3])
+		if (s[1] == 'r' && s[2] && ft_strchr("ab", s[2]) && END(s, 3))
 			return (true);
-		return (s[2] == '\0');
+		return (END(s, 2));
 	}
 	return (false);
 }

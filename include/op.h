@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/11 04:57:57 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/11 05:07:12 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/12 17:46:39 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 
 enum	e_ops
 {
-	OP_PUSH, OP_SWAP, OP_REV,
-	OP_RREV, OP_NIL,
+	OP_PUSH = 0, OP_SWAP,
+	OP_REV, OP_RREV, OP_NIL,
 
 	OP_TO_A = 0,
 	OP_TO_B, OP_TO_BOTH
