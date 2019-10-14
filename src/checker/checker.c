@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/08 03:56:04 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/12 15:24:02 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/13 22:45:22 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,11 @@ bool			apply_ops(t_ps stack, t_lst ops)
 		return (false);
 	}
 	b = ps_alloc('B', PS_SIZE(stack));
+	which_stack = OP_TO_B;
 	while (ops)
+	{
+		ps_dump(b);
+		ps_dump(stack);
 		if ((apply = op[apply_which((char *)ops->content, &which_stack)])
 				&& apply(stack, b, which_stack))
 			ops = ops->next;
@@ -93,5 +97,6 @@ bool			apply_ops(t_ps stack, t_lst ops)
 			ft_putendl_fd((char *)ops->content, 2);
 			return (false);
 		}
+	}
 	return (true);
 }

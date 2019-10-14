@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/11 04:55:25 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/12 17:10:01 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/13 19:03:38 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int		apply_which(const char *op, int *which)
 
 	if (!op || !*op)
 		return (OP_NIL);
-	which = false;
+	*which = false;
 	operation = OP_NIL;
 	if (*op == 'p')
 		operation = OP_PUSH;

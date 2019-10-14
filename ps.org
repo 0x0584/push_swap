@@ -1,5 +1,5 @@
-* IN-PROGRESS get close to Lem-in [0/3]
-SCHEDULED: <2019-10-01 Tue 00:00> DEADLINE: <2019-10-28 Mon>
+* IN-PROGRESS get close to Lem-in [0/3]                              :lem_in:
+SCHEDULED: <2019-10-01 Tue 00:00>-<2019-11-01 Fri> DEADLINE: <2019-10-28 Mon>
 
 - State "IN-PROGRESS" from "TODO"       [2019-10-02 Wed 06:05]
 
@@ -11,14 +11,16 @@ I must do something!! Graphs are l9wada! but first ,I have to finish the followi
 + [ ] push_swap
 + [ ] visualizer
 
-* IN-PROGRESS checker [0/3]
-DEADLINE: <2019-10-05 Sat>
+* DONE checker [3/4]                                                     :ps:
+SCHEDULED: <2019-10-20 Sun> DEADLINE: <2019-10-05 Sat>
 :PROPERTIES:
-:Effort:   10:00
+:Effort:   16:00
 :END:
+- State "DONE"       from "IN-PROGRESS" [2019-10-13 Sun 22:52]
 :LOGBOOK:
-CLOCK: [2019-10-09 Wed 18:03]
-CLOCK: [2019-10-08 Tue 02:38]--[2019-10-08 Tue 03:53] =>  1:15
+CLOCK: [2019-10-13 Sun 18:51]
+CLOCK: [2019-10-09 Wed 18:03]--[2019-10-09 Wed 18:15] =>  0:12
+CLOCK: [2019-10-08 Tue 02:38]--[2019-10-08 Tue 05:48] =>  3:10
 CLOCK: [2019-10-08 Tue 01:21]--[2019-10-08 Tue 01:46] =>  0:25
 CLOCK: [2019-10-08 Tue 00:40]--[2019-10-08 Tue 01:21] =>  0:41
 CLOCK: [2019-10-03 Thu 22:03]--[2019-10-04 Fri 00:40] =>  2:37
@@ -32,9 +34,10 @@ CLOCK: [2019-10-03 Thu 03:47]--[2019-10-03 Thu 03:51] =>  0:04
 
 I need to work at least 8hrs/day on this so that O can finish it once and for all
 
-- [ ] write the core operation
-- [ ] build a simple instruction input system
-- [ ] test the algorithm on it
+- [X] write the core operation
+- [X] build a simple instruction input system
+- [X] test +the algorithm+ some input
+- [ ] verify all possible inputs
 
 ** DONE import libft from gitlab
 DEADLINE: <2019-10-03 Thu 00:00>
@@ -44,7 +47,7 @@ DEADLINE: <2019-10-03 Thu 00:00>
 
 need to fix some errors of making before setting this to DONE! <2019-10-03 Thu 00:52> now I'm working on the checker!
 
-* TODO OMG! push_swap [0/3]
+* TODO OMG! push_swap [0/3]                                              :ps:
 SCHEDULED: <2019-10-06 Sun 09:00> DEADLINE: <2019-10-14 Mon 00:00>
 
 - State "PENDING"    from "TODO"       [2019-10-02 Wed 07:20]
@@ -62,9 +65,9 @@ it said that I need to find the mids, and then push to stack B. After that, retr
 /NOTE/: the miss leading that I have is *how to sort when getting things back*
 #+end_quote
 
-- [ ] document on the algos
-  - [ ] QuickSort
-  - [ ] MergeSort
+- [-] document on the algos
+  - [X] QuickSort
+  - [X] MergeSort
   - [ ] BlockSort
 - [ ] write a detailed version of it
 - [ ] implement it from /bottom to top/
