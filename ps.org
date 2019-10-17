@@ -1,6 +1,7 @@
-* IN-PROGRESS get close to Lem-in [0/3]                              :lem_in:
+* PENDING get close to Lem-in [0/3]                                  :lem_in:
 SCHEDULED: <2019-10-01 Tue 00:00>-<2019-11-01 Fri> DEADLINE: <2019-10-28 Mon>
 
+- State "PENDING"    from "IN-PROGRESS" [2019-10-15 Tue 00:11]
 - State "IN-PROGRESS" from "TODO"       [2019-10-02 Wed 06:05]
 
 DEADLINE: <2019-10-27 Wed>
@@ -47,9 +48,10 @@ DEADLINE: <2019-10-03 Thu 00:00>
 
 need to fix some errors of making before setting this to DONE! <2019-10-03 Thu 00:52> now I'm working on the checker!
 
-* TODO OMG! push_swap [0/3]                                              :ps:
+* PENDING OMG! push_swap [0/3]                                           :ps:
 SCHEDULED: <2019-10-06 Sun 09:00> DEADLINE: <2019-10-14 Mon 00:00>
 
+- State "PENDING"    from "TODO"       [2019-10-15 Tue 00:11]
 - State "PENDING"    from "TODO"       [2019-10-02 Wed 07:20]
 - State "PENDING"    from "IN-PROGRESS" [2019-10-02 Wed 06:02]
 - State "IN-PROGRESS" from "TODO"       [2019-10-02 Wed 06:00]
