@@ -6,25 +6,26 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/08 03:56:04 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/13 22:45:22 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/19 15:46:06 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /* IDEA: call each function ps_psh, ps_swp, ps_rot */
 
 #include "checker.h"
+#include "op.h"
 
 #define BUFF_SIZE		32
 
 /* NOTE: this should be the array, read values */
-t_ps			read_args(int ac, char**av)
+t_stack			read_args(int ac, char**av)
 {
-	t_ps	stack;
+	t_stack	stack;
 	long	val;
 	int		i;
 
 	i = 1;
-	stack = ps_alloc('A', (size_t)ac);
+	stack = (t_stack){NULL, 'A'};
 	/* NOTE: if any values is not a proper `int', we should
 	   stop, free everything and return NULL */
 	while (i < ac)
@@ -32,16 +33,16 @@ t_ps			read_args(int ac, char**av)
 		val = ft_atoll(av[i++]);
 		if (val > INT_VALMAX || val < INT_VALMIN)
 		{
-			ps_del(&stack);
+			ft_lstdel(&stack.nodes, lstdel_helper);
 			ft_putendl_fd("Fatal! in read_args: value is not a proper int", 2);
 			break ;
 		}
-		ps_push(stack, (t_val)val);
+		ft_lstpush(&stack.nodes, ft_lstnew((int *)&val, sizeof(int)));
 	}
 	return (stack);
 }
 
-/* NOTE: wait for stdin */
+/* XXX: wait for stdin */
 t_list			*read_input(void)
 {
 	char	buff[BUFF_SIZE + 1];
@@ -65,35 +66,52 @@ t_list			*read_input(void)
 	return (ops);
 }
 
-/* FIXME: add a typedef to `bool op(t_ps, t_ps, bool)' func prototype */
-bool			apply_ops(t_ps stack, t_lst ops)
+void stack_dump(t_lst node)
 {
-	static bool	(*op[])(t_ps, t_ps, int) = {
-		[OP_PUSH] = apply_push, [OP_SWAP] = apply_swap,
-		[OP_REV] = apply_rotation, [OP_RREV] = apply_rev_rotation,
+	t_stack *s;
+
+	if (node)
+	{
+		s = node->content;
+		ft_putchar(s->symbol);
+
+	}
+}
+
+/* FIXME: add a typedef to `bool op(t_lst, t_lst, bool)' func prototype */
+bool			apply_ops(t_stack stack, t_lst ops)
+{
+	static bool	(*op_func[])(t_lst *, t_lst *, t_op) = {
+		[OP_PUSH] = op_push, [OP_SWAP] = op_swap,
+		[OP_REV] = op_rotation, [OP_RREV] = op_rev_rotation,
 		[OP_NIL] = NULL
 	};
-	bool		(*apply)(t_ps, t_ps, int);
+	bool		(*apply)(t_lst *, t_lst *, t_op);
 	int			which_stack;
-	t_ps		b;
+	t_stack		b;
+	t_op		_op;
 
-	if (!stack || !ops)
+	if (!stack.nodes || !ops)
 	{
 		ft_putendl_fd("Fatal! in read_input: expect non NULL argument", 2);
 		return (false);
 	}
-	b = ps_alloc('B', PS_SIZE(stack));
+	b = (t_stack){NULL, 'B'};
 	which_stack = OP_TO_B;
+	/* getchar(); */
 	while (ops)
 	{
-		ps_dump(b);
-		ps_dump(stack);
-		if ((apply = op[apply_which((char *)ops->content, &which_stack)])
-				&& apply(stack, b, which_stack))
+		ft_lstiter_recu(b.nodes, stack_dump);
+		ft_lstiter_recu(stack.nodes, stack_dump);
+		_op = op_which((char *)ops->content);
+		printf("OP: %d  WHICH: %d\n", _op.op, _op.which);
+		getchar();
+		/* getchar(); */
+		if ((apply = op_func[_op.op]) && apply(&stack.nodes, &b.nodes, _op))
 			ops = ops->next;
 		else
 		{
-			ft_putstr_fd("Note! failed on operation ", 2);
+			ft_putstr_fd("Note! failed on op ", 2);
 			ft_putendl_fd((char *)ops->content, 2);
 			return (false);
 		}
