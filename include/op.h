@@ -5,53 +5,27 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/11 04:57:57 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/19 15:45:05 by archid-          ###   ########.fr       */
+/*   Created: 2019/10/22 03:16:37 by archid-           #+#    #+#             */
+/*   Updated: 2019/10/22 03:21:44 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef OP_H
 # define OP_H
 
-#include "libft.h"
+# include "ps.h"
 
-#define WHICH_HELPER(c)				(c == 'a' ? OP_TO_A : OP_TO_B)
-
-/*
-** Data Structures
-*/
-
-enum e_ops
+enum e_which_stack
 {
-	OP_PUSH = 0, OP_SWAP,
-	OP_REV, OP_RREV, OP_NIL,
-
-	OP_TO_A = 0,
-	OP_TO_B, OP_TO_BOTH
+	ON_A = 0,
+	ON_B, ON_BOTH
 };
 
-typedef struct	s_op
-{
-	enum e_ops	op;
-	int			which;
-}				t_op;
+bool	op_which(t_ps foo, t_ps bar, int which);
 
-typedef t_s32	t_val;
+bool	op_dopsh(t_ps dest, t_ps src);
+bool	op_doswp(t_ps stack);
+bool	op_dorot(t_ps stack);
+bool	op_dorrot(t_ps stack);
 
-/*
-** Function Prototypes
-*/
-
-bool	is_op(const char *buffer);
-
-t_op	op_which(const char *op);
-bool	op_push(t_lst *foo, t_lst *bar, t_op op);
-bool	op_swap(t_lst *foo, t_lst *bar, t_op op);
-bool	op_rotation(t_lst *foo, t_lst *bar, t_op op);
-bool	op_rev_rotation(t_lst *foo, t_lst *bar, t_op op);
-
-void	do_psh(t_lst *stack_dest, t_lst *stack_src);
-void	do_swp(t_lst *stack);
-void	do_rot(t_lst *stack, bool isup);
-
-#endif
+#endif /* OP_H */
