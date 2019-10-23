@@ -1,2 +1,2 @@
 all:
-	gcc -Wall -Wextra -ggdb src/*.c -Iinclude -Ilibft -Llibft -lft
+	gcc -Wall -Wextra -ggdb src/*.c -ochecker -Iinclude -Ilibft -Llibft -lft
