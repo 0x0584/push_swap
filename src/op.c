@@ -6,23 +6,19 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:41:51 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/23 05:26:28 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/24 05:46:22 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "op.h"
 
-#define OP_PREFIX(c)		(c == 'p' || c == 's' || c == 'r')
-#define OP_SUFFIX(c)		(c == 'a' || c == 'b' || c == 's' || c == 'r')
-#define HAS_NL(s)			(*(s) == '\n' && !*((s) + 1))
-#define OP_END(s)			(!*(s) || HAS_NL(s) || (*(s) == 'r' && !*((s) + 1)))
-
 void			op_dump(t_op op)
 {
-	char *prefix = "psrr";
-	char *suffix = "ab";
+	char *prefix;
+	char *suffix;
 
-
+	prefix = "psrr";
+	suffix = "ab";
 	printf("op is: %c", prefix[op.op]);
 	if (op.op == OP_RROT)
 		printf("%c", 'r');
@@ -35,55 +31,54 @@ void			op_dump(t_op op)
 	printf("\n");
 }
 
-bool			op_isvalid(const char *str, t_op *op)
+bool			op_isvalid(char const *str, t_op *op)
 {
-	size_t	len;
+	char bar[4];
 
-	if (!str)
+	if (!str ||  !*str || !op || ft_strlen(ft_strncpy(bar, str, 3)) < 2)
 		return (false);
-
-	printf("(prefix: %d, suffix: %d, end: %d)\n",
-		   OP_PREFIX(str[0]),
-		   OP_SUFFIX(str[1]),
-		   OP_END(str + 2));
-	len = ft_strlen(str);
-	if (len == 2)
+	if (bar[0] == 'p' && (bar[1] == 'a' || bar[1] == 'b') && !bar[2])
+			*op = OP_INIT(OP_PUSH, bar[1] == 'b');
+	else if (bar[0] == 's' && !bar[2])
 	{
-		if (str[0] == 'p' || str[0] == 's')
-			op->op = (str[0] == 'p' ? OP_PUSH : OP_SWAP);
-		else
-			op->op = OP_ROT;
-		if (str[1] == 's' || str[1] == 'r')
-			op->which = APPLY_ON_BOTH;
-		else
-			op->which = (str[1] == 'a' ? APPLY_ON_A : APPLY_ON_B);
+		if (bar[1] == 'a' || bar[1] == 'b')
+			*op = OP_INIT(OP_SWAP, bar[1] == 'b');
+		else if (bar[1] == 's')
+			*op = OP_INIT(OP_SWAP, APPLY_ON_BOTH);
 	}
-	op->op = len == 3 ? OP_RROT : op->op;
-	if (len == 3 && str[2] == 'r')
+	else if (bar[0] == 'r')
+	{
 		op->which = APPLY_ON_BOTH;
-	else if (len == 3)
-		op->which = (str[2] == 'a' ? APPLY_ON_A : APPLY_ON_B);
-	return (true);
+		if (bar[1] == 'r' && (bar[2] == 'a' || bar[2] == 'b'))
+			*op = OP_INIT(OP_RROT, bar[2] == 'b');
+		else if (bar[1] == 'a' || bar[1] == 'b')
+			*op = OP_INIT(OP_ROT, bar[1] == 'b');
+		else if (bar[1] == 'r' && bar[2] == 'r')
+			op->op = OP_RROT;
+		else if (bar[1] == 'r' && !bar[2])
+			op->op = OP_ROT;
+	}
+	return (OP_IS_GOOD(op));
 }
 
 bool			op_apply(t_op op, t_ps foo, t_ps bar)
 {
 	if (op.op == OP_PUSH)
-		return op_dopsh(!op.which ? foo : bar, !op.which ? bar : foo);
+		return (op_dopsh(!op.which ? foo : bar, !op.which ? bar : foo));
 	if (op.op == OP_SWAP)
 	{
 		if (op.which != APPLY_ON_BOTH)
-			return op_doswp(!op.which ? foo : bar);
-		return op_doswp(foo) && op_doswp(bar);
+			return (op_doswp(!op.which ? foo : bar));
+		return (op_doswp(foo) && op_doswp(bar));
 	}
-	else if (op.op == OP_ROT || op.op == OP_RROT)
+	if (op.op == OP_ROT || op.op == OP_RROT)
 	{
 		if (op.which != APPLY_ON_BOTH)
-			return op_dorot(!op.which ? foo : bar, op.op == OP_ROT);
-		return op_dorot(foo, op.op == OP_ROT)
-			&& op_dorot(bar, op.op == OP_ROT);
+			return (op_dorot(!op.which ? foo : bar, op.op == OP_ROT));
+		return (op_dorot(foo, op.op == OP_ROT)
+					&& op_dorot(bar, op.op == OP_ROT));
 	}
-	return false;
+	return (false);
 }
 
 bool			op_dopsh(t_ps dest, t_ps src)
@@ -137,7 +132,7 @@ bool			op_dorot(t_ps stack, bool is_up)
 	if (!stack || stack->len < 2)
 		return (false);
 	else if (stack->len == 2)
-		return op_doswp(stack);
+		return (op_doswp(stack));
 	dorot_helper(stack, &node, is_up, true);
 	dorot_helper(stack, &node, is_up, false);
 	return (true);

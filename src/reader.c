@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 21:36:42 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/23 04:09:14 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/24 05:43:47 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,21 +38,35 @@ t_ps	read_args(int ac, char**av)
 	return (stack);
 }
 
+void			striter_tolower(char *s)
+{
+	size_t i;
+
+	i = 0;
+	while (s[i])
+	{
+		s[i] = ft_tolower(s[i]);
+		i++;
+	}
+}
+
 t_list			*read_input(void)
 {
-	char	buff[BUFF_SIZE + 1];
-	ssize_t	ret;
+	char	*buff;
 	t_lst	ops;
-	bool	flag;
 	t_op	op;
+	bool	flag;
 
 	ops = NULL;
 	flag = true;
-	while (flag && (ret = read(0, buff, BUFF_SIZE)))
+	while (flag && gnl(0, &buff))
 	{
-		buff[ret] = '\0';
-		if ((flag = op_isvalid(buff, &op) && ret > 0))
+		ft_striter(buff, striter_tolower);
+		op = OP_INIT(OP_NA, APPLY_NA);
+		if ((flag = op_isvalid(buff, &op)))
 			ft_lstpush(&ops, ft_lstnew(&op, sizeof(t_op)));
+		op_dump(op);
+		ft_strdel(&buff);
 	}
 	if (!flag)
 	{
