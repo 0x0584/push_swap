@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/23 04:10:26 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/29 02:50:03 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@ void	ps_dump(t_ps ps)
 
 	if (!ps)
 		return ;
-	printf("stack: %c[%zu/%zu]\n(head: %p, tail: %p)\n------------------\n",
-			ps->symb, ps->len, ps->size, ps->head, ps->tail);
-	walk = ps->tail->prev;
-	while (walk->prev)
+	printf("stack: %c[%zu/%zu]\n------------------\n",
+			ps->symb, ps->len, ps->size);
+	walk = ps->head;
+	while (walk)
 	{
 		node = (t_ps_node *)walk->blob;
 		printf("{%p/%d: %d}\n", walk, node->ord, node->val);
-		walk = walk->prev;
+		walk = walk->next;
 	}
 	printf("------------------\n");
 }
@@ -37,8 +37,6 @@ t_ps	ps_alloc(char symb, size_t size)
 
 	if (!(ps = ALLOC(t_ps, 1, sizeof(struct s_ps_ds))))
 		return (NULL);
-	ps->head = ft_dlstnew(NULL, 0);
-	ps->tail = ft_dlstpush(&ps->head, ft_dlstnew(NULL, 0));
 	ps->symb = symb;
 	ps->size = size;
 	return (ps);
@@ -51,4 +49,22 @@ void	ps_del(t_ps *aps)
 	ft_dlstdel(lstdel_helper, &(*aps)->head);
 	free(*aps);
 	*aps = NULL;
+}
+
+bool	ps_issorted(t_ps ps)
+{
+	t_dlst walk;
+
+	if (!ps || !ps->head)
+		return (false);
+	ps_dump(ps);
+	walk = ps->head;
+	while (walk->next)
+	{
+		if (((t_ps_node *)walk->blob)->val
+				> ((t_ps_node *)walk->next->blob)->val)
+			return (false);
+		walk = walk->next;
+	}
+	return (true);
 }

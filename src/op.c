@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:41:51 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/24 05:46:22 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/29 02:29:20 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ bool			op_isvalid(char const *str, t_op *op)
 	return (OP_IS_GOOD(op));
 }
 
+/* FIXME: use array instead of sending two pointers */
 bool			op_apply(t_op op, t_ps foo, t_ps bar)
 {
 	if (op.op == OP_PUSH)
@@ -83,12 +84,9 @@ bool			op_apply(t_op op, t_ps foo, t_ps bar)
 
 bool			op_dopsh(t_ps dest, t_ps src)
 {
-	t_dlst node;
-
 	if (!dest || !src || !src->len || dest->len == dest->size)
 		return (false);
-	node = ft_dlstpop(&src->tail->prev);
-	ft_dlstpush(&dest->tail->prev, node);
+	ft_dlstadd(&dest->head, ft_dlstpeek(&src->head));
 	src->len--;
 	dest->len++;
 	return (true);
@@ -101,28 +99,11 @@ bool			op_doswp(t_ps stack)
 
 	if (!stack || stack->len < 2)
 		return (false);
-	foo = ft_dlstpop(&stack->tail->prev);
-	bar = ft_dlstpop(&stack->tail->prev);
-	ft_dlstpush(&stack->tail->prev, bar);
-	ft_dlstpush(&stack->tail->prev, foo);
+	foo = ft_dlstpeek(&stack->head);
+	bar = ft_dlstpeek(&stack->head);
+	ft_dlstadd(&stack->head, foo);
+	ft_dlstadd(&stack->head, bar);
 	return (true);
-}
-
-static void		dorot_helper(t_ps stack, t_dlst *anode,
-								bool is_up, bool is_get)
-{
-	if (is_get)
-	{
-		if (is_up)
-			*anode = ft_dlstpeek(&stack->head->next);
-		else
-			*anode = ft_dlstpop(&stack->tail->prev);
-		return ;
-	}
-	if (is_up)
-		ft_dlstpush(&stack->tail->prev, *anode);
-	else
-		ft_dlstadd(&stack->head->next, *anode);
 }
 
 bool			op_dorot(t_ps stack, bool is_up)
@@ -133,7 +114,7 @@ bool			op_dorot(t_ps stack, bool is_up)
 		return (false);
 	else if (stack->len == 2)
 		return (op_doswp(stack));
-	dorot_helper(stack, &node, is_up, true);
-	dorot_helper(stack, &node, is_up, false);
+	node = ft_dlstpeek(is_up ? &stack->head : &stack->tail);
+	ft_dlstadd(is_up ? &stack->tail : &stack->head, node);
 	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:10:29 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/23 03:56:25 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/29 02:38:56 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,6 @@ typedef struct s_ps_ds
 t_ps	ps_alloc(char symb, size_t size);
 void	ps_del(t_ps *aps);
 void	ps_dump(t_ps ps);
+bool	ps_issorted(t_ps ps);
 
 #endif /* PS_H */
