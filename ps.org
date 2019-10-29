@@ -13,9 +13,11 @@ I must do something!! Graphs are l9wada! but first ,I have to finish the followi
 + [ ] push_swap
 + [ ] visualizer
 
-* IN-PROGRESS checker [1/2]                                              :ps:
+* IN-PROGRESS checker [4/5]                                              :ps:
 SCHEDULED: <2019-10-27 Sun> DEADLINE: <2019-11-01 Fri>
 
+- State "IN-PROGRESS" from "DONE"       [2019-10-29 Tue 14:17]
+- State "DONE"       from "IN-PROGRESS" [2019-10-29 Tue 03:00]
 - State "IN-PROGRESS" from "DONE"       [2019-10-28 Mon 23:12]
 - State "DONE"       from "IN-PROGRESS" [2019-10-13 Sun 22:52]
 
@@ -40,17 +42,18 @@ I need to work at least 8hrs/day on this so that O can finish it once and for al
 
 - [X] write the core operation
 - [X] build a simple instruction input system
-- [ ] fix the bug of applying operations
-- [ ] test +the algorithm+ some input
+- [X] fix the bug of applying operations
+- [X] test +the algorithm+ some input
 - [ ] verify all possible inputs
 
-** IN-PROGRESS apply ops
+** DONE apply ops
 DEADLINE: <2019-10-31 Thu> SCHEDULED: <2019-10-29 Tue>
 :PROPERTIES:
 :Effort:   5h
 :END:
+- State "DONE"       from "IN-PROGRESS" [2019-10-29 Tue 03:00]
 :LOGBOOK:
-CLOCK: [2019-10-29 Tue 01:02]
+CLOCK: [2019-10-29 Tue 01:02]--[2019-10-29 Tue 03:00] =>  1:58
 CLOCK: [2019-10-29 Tue 01:01]--[2019-10-29 Tue 01:02] =>  0:01
 CLOCK: [2019-10-29 Tue 01:01]--[2019-10-29 Tue 01:01] =>  0:00
 :END:

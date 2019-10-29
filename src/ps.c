@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/29 02:50:03 by archid-          ###   ########.fr       */
+/*   Updated: 2019/10/29 14:19:38 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,14 @@ void	ps_del(t_ps *aps)
 	*aps = NULL;
 }
 
-bool	ps_issorted(t_ps ps)
+bool	ps_issorted(t_ps ps_a, t_ps ps_b)
 {
 	t_dlst walk;
 
-	if (!ps || !ps->head)
+	if (!ps_a || !ps_b || !ps_a->head || ps_b->head)
 		return (false);
-	ps_dump(ps);
-	walk = ps->head;
+	/* ps_dump(ps); */
+	walk = ps_a->head;
 	while (walk->next)
 	{
 		if (((t_ps_node *)walk->blob)->val
