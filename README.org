@@ -3,3 +3,7 @@
 When correction time will come, only truth will remain! I shall finish this soon. I'm working like I never did before. Part of it because I'm mad, and the other part is that I still got a story to tell!
 
 Correction would be on: <2019-11-10 Sun 16:00> or maybe earlier, depends on technical details!
+
+** What's left
+
+return everything to stack A: sort the remainder elements (for the moment just two to use swap) and keep return elements from the mid as sorted ones based on their turns.

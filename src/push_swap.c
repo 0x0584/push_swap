@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/02 18:29:28 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/02 21:10:12 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@
 /* NOTE: for the moment solve the main case: 8 5 6 3 1 2 */
 void	push_swap(t_ps a, t_ps b)
 {
-	t_ps		sorted_a;
-	t_ps_node	mids[2];
 
-	sorted_a = ps_mergesort(a);
+	ps_split_ranges(a, b);
+	ps_refill(a, b);
+
 	/* fill_stack_b(a, b, find_mids(sorted_a, mids)); */
 }
 
@@ -46,6 +46,7 @@ int main(int argc, char **argv)
 	/* getchar(); */
 
 	ps_b = ps_alloc('B', ps_a->size);
+	push_swap(ps_a, ps_b);
 
 	/* ft_printf("unsorted A\n"); */
 	/* ft_dlstiter(ps_a->head, helper_node_dump); */
@@ -56,11 +57,11 @@ int main(int argc, char **argv)
 
 	/* ft_putendl("You will pay! Much much more!"); */
 
-	ps_split_ranges(ps_a, ps_b);
-	ft_dlstiter(ps_a->head, helper_node_dump);
+	/* ps_split_ranges(ps_a, ps_b); */
+	/* ft_dlstiter(ps_a->head, helper_node_dump); */
 
-	ft_putendl("//");
-	ft_dlstiter(ps_b->head, helper_node_dump);
+	/* ft_putendl("//"); */
+	/* ft_dlstiter(ps_b->head, helper_node_dump); */
 
 	/* walk = sorted->tail; */
 	/* while (walk) */

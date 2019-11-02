@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/02 19:40:05 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/02 21:42:21 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,45 +217,75 @@ void	ps_split_ranges(t_ps a, t_ps b)
 	t_range		range;
 	int			turn;
 
-	ft_printf("??\nInitial things\n");
-	dump_stacks(a, b);
+	/* ft_printf("??\nInitial things\n"); */
+	/* dump_stacks(a, b); */
 
-	turn = 0;					/* NOTE: set turn in place */
+	turn = 0;
 	while (a->len > 2)
 	{
 		ps_find_mids(a, mids);
-		ft_printf("turn: %d\n ]]] val: %d ord: %d\n", turn,
-					mids[0].val, mids[0].ord);
-		ft_printf(" ]]] val: %d ord: %d\nnew turn!!",
-				  mids[1].val, mids[1].ord);
-		getchar();
+		/* ft_printf("turn: %d\n ]]] val: %d ord: %d\n", turn, */
+		/* 			mids[0].val, mids[0].ord); */
+		/* ft_printf(" ]]] val: %d ord: %d\nnew turn!!", */
+		/* 		  mids[1].val, mids[1].ord); */
+		/* getchar(); */
 		while (helper_end_split(a, mids))
 		{
 			range = ps_whichrange(a, mids);
-			ft_printf("val: %d is in range %d\n",
-						GET_PS_NODE(a->head)->val, range);
+			/* ft_printf("val: %d is in range %d\n", */
+			/* 			GET_PS_NODE(a->head)->val, range); */
 			GET_PS_NODE(a->head)->turn = turn;
 			GET_PS_NODE(a->head)->range = range;
+			if (range == RANGE_LOW || range == RANGE_MID)
+				op_dopsh(b, a);
 			if (range == RANGE_LOW)
-			{
-				op_dopsh(b, a);
 				op_dorot(b, true);
-				dump_stacks(a, b);
-				ft_putendl("here in low!");
-				getchar();
-			}
-			if (range == RANGE_MID)
-			{
-				op_dopsh(b, a);
-				dump_stacks(a, b);
-				ft_putendl("here mid!");
-				getchar();
-			}
 			if (range == RANGE_HIGH)
 				op_dorot(a, true);
 		}
-		dump_stacks(a, b);
-		getchar();
+		/* dump_stacks(a, b); */
+		/* getchar(); */
 		turn++;
+	}
+}
+
+void	ps_sort_remainder(t_ps a)
+{
+	/*
+	   for the moment, only two elements left, so we shlal swap them
+	  once, he told me that we can find a sort for 6 elements
+	*/
+	if (GET_PS_NODE(a->head)->val > GET_PS_NODE(a->tail)->val)
+		op_doswp(a);
+}
+
+void	ps_refill(t_ps a, t_ps b)
+{
+	int		turn;
+	int		rotate_count;
+	bool	is_up;
+	bool	is_firsttime;
+
+	if (!a || !b)
+		return ;
+	is_up = true;
+	turn = GET_PS_NODE(b->head)->turn;
+	rotate_count = 0;
+	ps_sort_remainder(a);
+	dump_stacks(a, b);
+	is_firsttime = true;
+	while (b->len)
+	{
+		while (GET_PS_NODE(b->head)->val > GET_PS_NODE(a->head)->val)
+		{
+			op_dorot(a, is_up);
+			rotate_count++;
+		}
+		op_dopsh(a, b);
+		/* if () */
+		/* { */
+
+		/* } */
+		break;
 	}
 }

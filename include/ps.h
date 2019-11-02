@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:10:29 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/02 18:29:52 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/02 20:19:50 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,7 @@ void		helper_node_dump(t_dlst e);
 t_range		ps_whichrange(t_ps a, t_ps_node *mids);
 void		ps_split_ranges(t_ps a, t_ps b);
 void		ps_find_mids(t_ps sorted_a, t_ps_node *mids);
+void		ps_refill(t_ps a, t_ps b);
+void		ps_sort_remainder(t_ps a);
 
 #endif
