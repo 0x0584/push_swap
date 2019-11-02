@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:10:29 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/02 13:54:10 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/02 18:29:52 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@
 typedef int		t_val;
 typedef enum	e_ranges
 {
-	RANGE_LOW, RANGE_MID,
-	RANGE_HIGH, RANGE_NA
+	RANGE_LOW,
+	RANGE_MID,
+	RANGE_HIGH,
+	RANGE_NA
 }				t_range;
 
 
@@ -34,6 +36,7 @@ typedef struct	s_ps_node
 	   reverse, we can set the node to it's initial place
 	*/
 	int		turn;
+	t_range	range;
 	t_val	ord;
 	t_val	val;
 }				t_ps_node;

@@ -6,14 +6,14 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:41:51 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/02 15:06:42 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/02 19:41:03 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "op.h"
 #include "ft_printf.h"
 
-void			op_dump(t_op op)
+void		op_dump(t_op op)
 {
 	char *prefix;
 	char *suffix;
@@ -32,7 +32,7 @@ void			op_dump(t_op op)
 	printf("\n");
 }
 
-bool			op_isvalid(char const *str, t_op *op)
+bool		op_isvalid(char const *str, t_op *op)
 {
 	char bar[4];
 
@@ -63,7 +63,7 @@ bool			op_isvalid(char const *str, t_op *op)
 }
 
 /* FIXME: use array instead of sending two pointers */
-bool			op_apply(t_op op, t_ps foo, t_ps bar)
+bool		op_apply(t_op op, t_ps foo, t_ps bar)
 {
 	if (op.op == OP_PUSH)
 		return (op_dopsh(!op.which ? foo : bar, !op.which ? bar : foo));
@@ -83,7 +83,7 @@ bool			op_apply(t_op op, t_ps foo, t_ps bar)
 	return (false);
 }
 
-bool			op_dopsh(t_ps dest, t_ps src)
+bool		op_dopsh(t_ps dest, t_ps src)
 {
 	if (!dest || !src || !src->len || dest->len == dest->size)
 		return (false);
@@ -94,7 +94,7 @@ bool			op_dopsh(t_ps dest, t_ps src)
 	return (true);
 }
 
-bool			op_doswp(t_ps ps)
+bool		op_doswp(t_ps ps)
 {
 	t_dlst foo;
 	t_dlst bar;
@@ -109,20 +109,39 @@ bool			op_doswp(t_ps ps)
 	return (true);
 }
 
-bool			op_dorot(t_ps ps, bool is_up)
+bool		op_dorot(t_ps ps, bool is_up)
 {
 	t_dlst node;
+	t_dlst walk;
+	t_dlst tmp;
 
 	if (!ps || ps->len < 2)
 		return (false);
 	else if (ps->len == 2)
 		return (op_doswp(ps));
-	ft_printf(">> APPLYING OP: %{red_fg}r%c%c%{reset}\n", !is_up ? 'r' : '\0', ps->symb);
+	ft_printf(">> APPLYING OP: %{red_fg}r%c%c%{reset}\n",
+				!is_up ? 'r' : '\0', ps->symb);
 	node = ft_dlstpeek(is_up ? &ps->head : &ps->tail);
 	if (is_up)
-		ft_dlstpush(&ps->tail, node);
+		ps->tail = ft_dlstpush(&ps->head, node);
 	else
 		ft_dlstadd(&ps->head, node);
+	/* walk = ps->head; */
+	/* while (walk) */
+	/* { */
+	/* 	helper_node_dump(walk); */
+	/* 	walk = walk->next; */
+	/* } */
+	/* ft_putendl("after head"); */
+	/* getchar(); */
+	/* walk = ps->tail; */
+	/* while (walk) */
+	/* { */
+	/* 	helper_node_dump(walk); */
+	/* 	walk = walk->prev; */
+	/* } */
+	/* ft_putendl("after tail"); */
+	/* getchar(); */
 	/* ft_dlstadd(is_up ? &ps->tail : &ps->head, node); */
 	return (true);
 }

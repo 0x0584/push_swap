@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/02 15:22:52 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/02 19:40:05 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,13 +114,24 @@ int		ps_node_cmp(t_dlst foo, t_dlst bar)
 	return (GET_PS_NODE(bar)->val - GET_PS_NODE(foo)->val);
 }
 
-void		helper_node_dump(t_dlst e)
+void	helper_node_dump(t_dlst e)
 {
 	if (!e)
 		return ;
 	/* TODO: update repo's libft */
-	printf("(%p| ord: %d, val: %d)\n", e, GET_PS_NODE(e)->ord,
-		   GET_PS_NODE(e)->val);
+	if (GET_PS_NODE(e)->range == RANGE_LOW)
+		ft_printf("%{green_fg}%d(%d)%{reset} ",
+				  GET_PS_NODE(e)->val, GET_PS_NODE(e)->turn);
+	else if (GET_PS_NODE(e)->range == RANGE_MID)
+		ft_printf("%{blue_fg}%d(%d)%{reset} ",
+				  GET_PS_NODE(e)->val, GET_PS_NODE(e)->turn);
+	else if (GET_PS_NODE(e)->range == RANGE_HIGH)
+		ft_printf("%{red_fg}%d(%d)%{reset} ",
+				  GET_PS_NODE(e)->val, GET_PS_NODE(e)->turn);
+
+	/* ft_printf("(%p | ord: %d, val: %d, turn: %d)\n", e,
+		GET_PS_NODE(e)->ord, */
+	/* 			GET_PS_NODE(e)->val, GET_PS_NODE(e)->turn); */
 }
 
 t_ps	ps_mergesort(t_ps ps)
@@ -158,11 +169,14 @@ void	ps_find_mids(t_ps a, t_ps_node *mids)
 		return ;
 	index = 0;
 	sorted_a = ps_mergesort(a);
+	ft_dlstiter(sorted_a->head, helper_node_dump);
+	ft_putendl("dumped!");
+	getchar();
 	walk = sorted_a->head;
 	while (walk)
 	{
 		i = 0;
-		while (i++ < ONE_THIRD(a->size))
+		while (i++ < ONE_THIRD(a->len))
 			walk = walk->next;
 		mids[index] = *GET_PS_NODE(walk);
 		if (index++)
@@ -190,39 +204,58 @@ bool	helper_end_split(t_ps a, t_ps_node *mids)
 void	dump_stacks(t_ps a, t_ps b)
 {
 	ft_printf("////\n");
-	ft_printf(" This Stack A:\n");
+	ft_printf(" A:[");
 	ft_dlstiter(a->head, helper_node_dump);
-	ft_printf(" This Stack B:\n");
+	ft_printf("]\n B:[");
 	ft_dlstiter(b->head, helper_node_dump);
-	ft_printf("////\n");
+	ft_printf("]\n////\n");
 }
 
 void	ps_split_ranges(t_ps a, t_ps b)
 {
 	t_ps_node	mids[2];
 	t_range		range;
+	int			turn;
 
-	ft_printf("??\n");
-	ps_find_mids(a, mids);
-
-	ft_printf(" ]]] val: %d ord: %d\n", mids[0].val, mids[0].ord);
-	ft_printf(" ]]] val: %d ord: %d\n", mids[1].val, mids[1].ord);
-	getchar();
-	ft_printf("Initial things\n");
+	ft_printf("??\nInitial things\n");
 	dump_stacks(a, b);
-	/* NOTE: set turn in place */
-	while (helper_end_split(a, mids))
+
+	turn = 0;					/* NOTE: set turn in place */
+	while (a->len > 2)
 	{
-		range = ps_whichrange(a, mids);
-		ft_printf("val: %d is in range %d\n",
-					GET_PS_NODE(a->head)->val, range);
-		if (range == RANGE_LOW)
-			op_dorot(b, true);
-		if (range < RANGE_HIGH)
-			op_dopsh(b, a);
-		if (range != RANGE_LOW && range != RANGE_MID)
-			op_dorot(a, true);
+		ps_find_mids(a, mids);
+		ft_printf("turn: %d\n ]]] val: %d ord: %d\n", turn,
+					mids[0].val, mids[0].ord);
+		ft_printf(" ]]] val: %d ord: %d\nnew turn!!",
+				  mids[1].val, mids[1].ord);
+		getchar();
+		while (helper_end_split(a, mids))
+		{
+			range = ps_whichrange(a, mids);
+			ft_printf("val: %d is in range %d\n",
+						GET_PS_NODE(a->head)->val, range);
+			GET_PS_NODE(a->head)->turn = turn;
+			GET_PS_NODE(a->head)->range = range;
+			if (range == RANGE_LOW)
+			{
+				op_dopsh(b, a);
+				op_dorot(b, true);
+				dump_stacks(a, b);
+				ft_putendl("here in low!");
+				getchar();
+			}
+			if (range == RANGE_MID)
+			{
+				op_dopsh(b, a);
+				dump_stacks(a, b);
+				ft_putendl("here mid!");
+				getchar();
+			}
+			if (range == RANGE_HIGH)
+				op_dorot(a, true);
+		}
 		dump_stacks(a, b);
 		getchar();
+		turn++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/02 15:04:20 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/02 18:29:28 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,21 +38,23 @@ int main(int argc, char **argv)
 
 	if (!(ps_a = read_args(argc, argv)))
 		return (EXIT_FAILURE);
-	sorted = ps_mergesort(ps_a);
+
+	/* sorted = ps_mergesort(ps_a); */
 	/* ft_dlstiter(ps_a->head, helper_node_dump); */
 	/* op_dorot(ps_a, true); */
 	/* ft_dlstiter(ps_a->head, helper_node_dump); */
 	/* getchar(); */
+
 	ps_b = ps_alloc('B', ps_a->size);
 
-	ft_printf("unsorted A\n");
-	ft_dlstiter(ps_a->head, helper_node_dump);
+	/* ft_printf("unsorted A\n"); */
+	/* ft_dlstiter(ps_a->head, helper_node_dump); */
 
-	ft_printf("sorted A\n");
-	ps_find_mids(sorted, mids);
-	ft_dlstiter(sorted->head, helper_node_dump);
+	/* ft_printf("sorted A\n"); */
+	/* /\* ps_find_mids(sorted, mids); *\/ */
+	/* ft_dlstiter(sorted->head, helper_node_dump); */
 
-	ft_putendl("You will pay! Much much more!");
+	/* ft_putendl("You will pay! Much much more!"); */
 
 	ps_split_ranges(ps_a, ps_b);
 	ft_dlstiter(ps_a->head, helper_node_dump);
@@ -60,15 +62,16 @@ int main(int argc, char **argv)
 	ft_putendl("//");
 	ft_dlstiter(ps_b->head, helper_node_dump);
 
-
 	/* walk = sorted->tail; */
 	/* while (walk) */
 	/* { */
 	/* 	helper_node_dump(walk); */
 	/* 	walk = walk->prev; */
 	/* } */
+
 	ps_del(&ps_a);
 	ps_del(&ps_b);
+
 	/* find_mids(sorted, mids); */
 
 	return (0);

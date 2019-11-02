@@ -13,4 +13,4 @@
 
 make -C libft
 make
-./checker 8 5 6 3 1 2
+./push_swap 8 5 6 3 1 2
