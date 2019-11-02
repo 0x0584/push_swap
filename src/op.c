@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:41:51 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/29 02:29:20 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/01 17:53:26 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,29 +92,29 @@ bool			op_dopsh(t_ps dest, t_ps src)
 	return (true);
 }
 
-bool			op_doswp(t_ps stack)
+bool			op_doswp(t_ps ps)
 {
 	t_dlst foo;
 	t_dlst bar;
 
-	if (!stack || stack->len < 2)
+	if (!ps || ps->len < 2)
 		return (false);
-	foo = ft_dlstpeek(&stack->head);
-	bar = ft_dlstpeek(&stack->head);
-	ft_dlstadd(&stack->head, foo);
-	ft_dlstadd(&stack->head, bar);
+	foo = ft_dlstpeek(&ps->head);
+	bar = ft_dlstpeek(&ps->head);
+	ft_dlstadd(&ps->head, foo);
+	ft_dlstadd(&ps->head, bar);
 	return (true);
 }
 
-bool			op_dorot(t_ps stack, bool is_up)
+bool			op_dorot(t_ps ps, bool is_up)
 {
 	t_dlst node;
 
-	if (!stack || stack->len < 2)
+	if (!ps || ps->len < 2)
 		return (false);
-	else if (stack->len == 2)
-		return (op_doswp(stack));
-	node = ft_dlstpeek(is_up ? &stack->head : &stack->tail);
-	ft_dlstadd(is_up ? &stack->tail : &stack->head, node);
+	else if (ps->len == 2)
+		return (op_doswp(ps));
+	node = ft_dlstpeek(is_up ? &ps->head : &ps->tail);
+	ft_dlstadd(is_up ? &ps->tail : &ps->head, node);
 	return (true);
 }

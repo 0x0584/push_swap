@@ -13,9 +13,10 @@ I must do something!! Graphs are l9wada! but first ,I have to finish the followi
 + [ ] push_swap
 + [ ] visualizer
 
-* IN-PROGRESS checker [4/5]                                              :ps:
+* PENDING checker [4/5]                                                  :ps:
 SCHEDULED: <2019-10-27 Sun> DEADLINE: <2019-11-01 Fri>
 
+- State "PENDING"    from "IN-PROGRESS" [2019-11-01 Fri 12:39]
 - State "IN-PROGRESS" from "DONE"       [2019-10-29 Tue 14:17]
 - State "DONE"       from "IN-PROGRESS" [2019-10-29 Tue 03:00]
 - State "IN-PROGRESS" from "DONE"       [2019-10-28 Mon 23:12]
@@ -44,6 +45,7 @@ I need to work at least 8hrs/day on this so that O can finish it once and for al
 - [X] build a simple instruction input system
 - [X] fix the bug of applying operations
 - [X] test +the algorithm+ some input
+- [ ] verify that there were no duplicates
 - [ ] verify all possible inputs
 
 ** DONE apply ops

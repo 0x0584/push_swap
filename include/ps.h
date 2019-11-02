@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:10:29 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/29 14:18:30 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/02 09:28:47 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,25 @@
 
 # include "dlst.h"
 
-typedef struct s_ps_node
+typedef int		t_val;
+typedef enum	e_ranges
+{
+	RANGE_LOW,
+	RANGE_MID,
+	RANGE_HIGH
+}				t_range;
+
+# define GET_PS_NODE(dlst)		((t_ps_node *)dlst->blob)
+
+typedef struct	s_ps_node
 {
 	/*
 	   NOTE: holding the order for each node so that if we
 	   reverse, we can set the node to it's initial place
 	*/
-	int ord;
-	int val;
+	t_range range;
+	t_val	ord;
+	t_val	val;
 }				t_ps_node;
 
 /*
@@ -49,5 +60,7 @@ t_ps	ps_alloc(char symb, size_t size);
 void	ps_del(t_ps *aps);
 void	ps_dump(t_ps ps);
 bool	ps_issorted(t_ps ps_a, t_ps ps_b);
+t_ps	ps_mergesort(t_ps ps);
+t_ps	ps_clone(t_ps const ps);
 
 #endif /* PS_H */
