@@ -1,55 +1,5 @@
-* About
+* Writing README doesn't matter anymore
 
-Sorting one stack using another, with limited operation and done using the least number of instructions
+When correction time will come, only truth will remain! I shall finish this soon. I'm working like I never did before. Part of it because I'm mad, and the other part is that I still got a story to tell!
 
-* Data structure
-
-I would have a stack with usual push/pop & rotation. But I have to choose an ADT:
-
-- List :: like singulary or doubly linked lists...
-- Array :: this circular array looks promising since it would offer in-place modifcation of elements
-  - if implemented as I think of it now, like creating pointers to indicate /turn/ when splitting the Stack A
-  - those pointers would make things easy, to devide the things into an /onion-like structure/
-
-** Terminology
-
-turn is each time wen find mids and split.. we need to keep track of those to know how the /onion-like structure/ works
-
-* Algorithm
-
-Some notes before reading the algorithm
-
-+ /A stack is a sub stack of its self/
-+ /Push send the element to the end of the stack/
-
-This algorithm uses a tweaked quick-sort, where we divide the *stack A* into range classes, *sub stack*, based on the /mid/ value of each class.
-
-_Details of the Algorithm_
-
-1. find the /mid/ value of the whole array
-2. use that /mid/ value to split *stack A* into half, where all values    /less than mid/ form a *sub stack* which we *push to stack B*
-3. update the /mid/ value and repeat 2 until /no elements are left/ or /only two are left/
-4. apply the same process backwards on each *sub stack*, since they're already sorted based on range, push elements back to *stack A*, only now we push the value /above the mid/ value
-
-* Improved version
-** notes
-
-we must have an operator =t_list *get_element(t_stack, int)= which does the following
-
-- find where is the element
-- if above the half of =stack_src=, push enough =ra='s to get it on top
-- else if below half of =stack_src=, push enough =rra='s
-
-** example
-A: [6 3 5 2 4 1] B: []
-size: 6
-
-after sorting the input we shall have A: [1 2 3 4 5 6]
-divide the stack A into three same size sub stacks: 3x2 stacks [1 2] [3 4] [5 6]
-find mid of range_0 which means either 6 or 5
-
-
-* TODOs [1/1]
-
-+ [X] Document on Quick Sort and Selection Sort
-+ [ ] Implement the Algorithm
+Correction would be on: <2019-11-10 Sun 16:00> or maybe earlier, depends on technical details!
