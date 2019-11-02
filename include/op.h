@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:16:37 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/24 05:46:29 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/02 11:57:39 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ typedef struct	s_op
 	{
 		APPLY_ON_A, APPLY_ON_B,
 		APPLY_ON_BOTH, APPLY_NA = -1
-	}		which;
+  	}		which;
 	enum e_op
 	{
 		OP_PUSH, OP_SWAP, OP_ROT,

@@ -6,11 +6,13 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/02 09:30:30 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/02 15:22:52 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ps.h"
+#include "op.h"
+#include "ft_printf.h"
 
 void	ps_dump(t_ps ps)
 {
@@ -85,57 +87,6 @@ static t_dlst		helper_merge(t_dlst left, t_dlst right,
 	return (root);
 }
 
-static void			helper_halfsplit(t_dlst root, t_dlst *ahead,
-										t_dlst *atail)
-{
-	t_dlst foo;
-	t_dlst bar;
-
-	bar = root;
-	foo = root->next;
-	while (foo)
-	{
-		foo = foo->next;
-		if (foo)
-		{
-			bar = bar->next;
-			foo = foo->next;
-		}
-	}
-	*ahead = root;
-	*atail = bar->next;
-	bar->next = NULL;
-}
-
-static void		helper_fix_prev(t_dlst lst)
-{
-	t_dlst prev;
-
-	if (lst == NULL)
-		return ;
-	lst->prev = NULL;
-	prev = NULL;
-	while (lst)
-	{
-		lst->prev = prev;
-		prev = lst;
-		lst = lst->next;
-	}
-}
-
-void				ft_dlstmergesort(t_dlst *alst, int (cmp)(t_dlst, t_dlst))
-{
-	t_dlst left;
-	t_dlst right;
-
-	if (!alst || !*alst || !(*alst)->next)
-		return ;
-	helper_halfsplit(*alst, &left, &right);
-	ft_dlstmergesort(&left, cmp);
-	ft_dlstmergesort(&right, cmp);
-	helper_fix_prev(*alst = helper_merge(left, right, cmp));
-}
-
 t_ps	ps_clone(t_ps const ps)
 {
 	t_ps	duped;
@@ -163,6 +114,15 @@ int		ps_node_cmp(t_dlst foo, t_dlst bar)
 	return (GET_PS_NODE(bar)->val - GET_PS_NODE(foo)->val);
 }
 
+void		helper_node_dump(t_dlst e)
+{
+	if (!e)
+		return ;
+	/* TODO: update repo's libft */
+	printf("(%p| ord: %d, val: %d)\n", e, GET_PS_NODE(e)->ord,
+		   GET_PS_NODE(e)->val);
+}
+
 t_ps	ps_mergesort(t_ps ps)
 {
 	t_ps sorted;
@@ -171,4 +131,98 @@ t_ps	ps_mergesort(t_ps ps)
 	ft_dlstmergesort(&sorted->head, ps_node_cmp);
 	sorted->tail = ft_dlst_gettail(sorted->head);
 	return (sorted);
+}
+
+t_range		ps_whichrange(t_ps a, t_ps_node *mids)
+{
+	if (!a)
+		return (RANGE_NA);
+	/* TODO: check whther mid is included or excluded */
+	if (GET_PS_NODE(a->head)->val < mids[0].val)
+		return (RANGE_LOW);
+	else if (GET_PS_NODE(a->head)->val >= mids[0].val
+				&& GET_PS_NODE(a->head)->val < mids[1].val)
+		return (RANGE_MID);
+	return (RANGE_HIGH);
+}
+
+void	ps_find_mids(t_ps a, t_ps_node *mids)
+{
+	/* look for 1/2 and 2/3 */
+	size_t	i;
+	short	index;
+	t_dlst	walk;
+	t_ps	sorted_a;
+
+	if (!a || !mids)
+		return ;
+	index = 0;
+	sorted_a = ps_mergesort(a);
+	walk = sorted_a->head;
+	while (walk)
+	{
+		i = 0;
+		while (i++ < ONE_THIRD(a->size))
+			walk = walk->next;
+		mids[index] = *GET_PS_NODE(walk);
+		if (index++)
+			walk = NULL;
+	}
+	ps_del(&sorted_a);
+}
+
+bool	helper_end_split(t_ps a, t_ps_node *mids)
+{
+	t_dlst	walk;
+	bool	flag;
+
+	flag = false;
+	walk = a->head;
+	while (walk)
+	{
+		if ((flag = GET_PS_NODE(walk)->val < mids[1].val))
+			break ;
+		walk = walk->next;
+	}
+	return (flag);
+}
+
+void	dump_stacks(t_ps a, t_ps b)
+{
+	ft_printf("////\n");
+	ft_printf(" This Stack A:\n");
+	ft_dlstiter(a->head, helper_node_dump);
+	ft_printf(" This Stack B:\n");
+	ft_dlstiter(b->head, helper_node_dump);
+	ft_printf("////\n");
+}
+
+void	ps_split_ranges(t_ps a, t_ps b)
+{
+	t_ps_node	mids[2];
+	t_range		range;
+
+	ft_printf("??\n");
+	ps_find_mids(a, mids);
+
+	ft_printf(" ]]] val: %d ord: %d\n", mids[0].val, mids[0].ord);
+	ft_printf(" ]]] val: %d ord: %d\n", mids[1].val, mids[1].ord);
+	getchar();
+	ft_printf("Initial things\n");
+	dump_stacks(a, b);
+	/* NOTE: set turn in place */
+	while (helper_end_split(a, mids))
+	{
+		range = ps_whichrange(a, mids);
+		ft_printf("val: %d is in range %d\n",
+					GET_PS_NODE(a->head)->val, range);
+		if (range == RANGE_LOW)
+			op_dorot(b, true);
+		if (range < RANGE_HIGH)
+			op_dopsh(b, a);
+		if (range != RANGE_LOW && range != RANGE_MID)
+			op_dorot(a, true);
+		dump_stacks(a, b);
+		getchar();
+	}
 }

@@ -1,6 +1,7 @@
-* IN-PROGRESS get close to Lem-in [0/3]                             :lem_in:
+* PENDING get close to Lem-in [0/3]                                  :lem_in:
 DEADLINE: <2019-11-13 Wed> SCHEDULED: <2019-10-01 Tue 00:00>
 
+- State "PENDING"    from "IN-PROGRESS" [2019-11-02 Sat 10:29]
 - State "IN-PROGRESS" from "PENDING"    [2019-10-28 Mon 23:13]
 - State "PENDING"    from "IN-PROGRESS" [2019-10-15 Tue 00:11]
 - State "IN-PROGRESS" from "TODO"       [2019-10-02 Wed 06:05]
@@ -13,7 +14,7 @@ I must do something!! Graphs are l9wada! but first ,I have to finish the followi
 + [ ] push_swap
 + [ ] visualizer
 
-* PENDING checker [4/5]                                                  :ps:
+* PENDING checker [4/6]                                                  :ps:
 SCHEDULED: <2019-10-27 Sun> DEADLINE: <2019-11-01 Fri>
 
 - State "PENDING"    from "IN-PROGRESS" [2019-11-01 Fri 12:39]
@@ -70,7 +71,7 @@ DEADLINE: <2019-10-03 Thu 00:00>
 
 need to fix some errors of making before setting this to DONE! <2019-10-03 Thu 00:52> now I'm working on the checker!
 
-* IN-PROGRESS OMG! push_swap [1/3]                                      :ps:
+* IN-PROGRESS OMG! push_swap [3/5]                                       :ps:
 DEADLINE: <2019-11-10 Sun> SCHEDULED: <2019-10-06 Sun 09:00>
 
 - State "IN-PROGRESS" from "PENDING"    [2019-10-28 Mon 23:13]
@@ -94,8 +95,10 @@ it said that I need to find the mids, and then push to stack B. After that, retr
   - [X] QuickSort
   - [X] MergeSort
   - [X] +BlockSort+
-- [ ] write a detailed version of it
-- [ ] implement it from /bottom to top/
+- [X] used merge sort on doubly linked list
+- [X] split stack A based on mids
+- [ ] repeat that until stack A has less that 3 elements
+- [ ]
 
 * PENDING DOPAMINE! visualizer!!                                  :optional:
 DEADLINE: <2019-11-14 Thu> SCHEDULED: <2019-10-16 Wed>

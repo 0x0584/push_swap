@@ -6,11 +6,12 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:41:51 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/01 17:53:26 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/02 15:06:42 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "op.h"
+#include "ft_printf.h"
 
 void			op_dump(t_op op)
 {
@@ -86,6 +87,7 @@ bool			op_dopsh(t_ps dest, t_ps src)
 {
 	if (!dest || !src || !src->len || dest->len == dest->size)
 		return (false);
+	ft_printf(">> APPLYING OP: %{red_fg}p%c%{reset}\n", dest->symb);
 	ft_dlstadd(&dest->head, ft_dlstpeek(&src->head));
 	src->len--;
 	dest->len++;
@@ -99,6 +101,7 @@ bool			op_doswp(t_ps ps)
 
 	if (!ps || ps->len < 2)
 		return (false);
+	ft_printf(">> APPLYING OP: %{red_fg}s%c%{reset}\n", ps->symb);
 	foo = ft_dlstpeek(&ps->head);
 	bar = ft_dlstpeek(&ps->head);
 	ft_dlstadd(&ps->head, foo);
@@ -114,7 +117,12 @@ bool			op_dorot(t_ps ps, bool is_up)
 		return (false);
 	else if (ps->len == 2)
 		return (op_doswp(ps));
+	ft_printf(">> APPLYING OP: %{red_fg}r%c%c%{reset}\n", !is_up ? 'r' : '\0', ps->symb);
 	node = ft_dlstpeek(is_up ? &ps->head : &ps->tail);
-	ft_dlstadd(is_up ? &ps->tail : &ps->head, node);
+	if (is_up)
+		ft_dlstpush(&ps->tail, node);
+	else
+		ft_dlstadd(&ps->head, node);
+	/* ft_dlstadd(is_up ? &ps->tail : &ps->head, node); */
 	return (true);
 }
