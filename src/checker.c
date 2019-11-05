@@ -6,13 +6,14 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 20:42:23 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/05 14:53:35 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/05 15:47:03 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ps.h"
 #include "op.h"
 #include "reader.h"
+#include "ft_printf.h"
 
 #define STACK_SIZE 6
 #define OP_NEW(op, which)		(t_op){which, op}
@@ -59,7 +60,6 @@ t_lst	example(void)
 	return ops;
 }
 
-
 int		main(int argc, char *argv[])
 {
     t_ps	ps_a, ps_b;
@@ -77,7 +77,7 @@ int		main(int argc, char *argv[])
 
 	walk = ops;
 	failed = false;
-	ft_putendl(" >>> INITIAL STATE");
+	ft_dprintf(2, " >>> INITIAL STATE");
 	dump_stacks(ps_a, ps_b);
 	ft_putendl(" ============ ");
 	while (walk)
@@ -85,18 +85,19 @@ int		main(int argc, char *argv[])
 		op = (t_op *)walk->content;
 		op_dump(*op);
 		failed = !op_apply(*op, ps_a, ps_b);
-		printf("%s\n", failed ? "KO" : "OK");
+		ft_dprintf(2, "%s\n", failed ? "KO" : "OK");
 		dump_stacks(ps_a, ps_b);
 		ft_putendl("");
 		if (failed)
 			break ;
 		walk = walk->next;
 	}
-	ft_putendl(" >>> FINAL STATE");
+	ft_dprintf(2, " >>> FINAL STATE");
 	dump_stacks(ps_a, ps_b);
-	ft_putendl(" ============ ");
+	ft_dprintf(2, " ============ ");
 
-	printf("is stack sorted? %s\n", ps_issorted(ps_a, ps_b) ? "OK" : "KO");
+	ft_dprintf(2, "is stack sorted? %s\n",
+			   ps_issorted(ps_a, ps_b) ? "OK" : "KO");
 
 	ft_lstdel(&ops, lstdel_helper);
 	ps_del(&ps_a);

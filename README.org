@@ -20,3 +20,8 @@ Correction would be on: <2019-11-10 Sun 16:00> or maybe earlier, depends on tech
 + [ ] few reversed :: 2 1 0 *FAILED* 6 instructions =ra pb pb rb pa pa= /maybe for fewer elements (like 2 or 3 elements) we can brute-force that/
 + [ ] inversed first :: 3 2 4 5 6 7 8 *FAILED* 15 instructions =pb pb rb pb pb pb rb pb pa rrb pa pa pa pa pa=
 + [ ] last inversed :: 2 3 4 5 6 8 7 *FAILED* 17 instructions =pb pb rb pb pb pb rb ra pb pa rrb pa pa pa rrb pa pa= /quick fix: rb & ra == rr and also synchronizing the rotation might help/
++ [ ] larger input :: input.txt *FAILED* nothing is sorted eventually
+
+#+begin_quote
+it seems like nothing is working! the trick of splitting works fine with smaller input, but it's not working with a larger input. probably because I do not put stuff into their place. Onion splitting is working fine, I might just rotation stack A to put the items in place. One idea that comes to mind is to get use a sorted version to track the order and then rotate based on that order.
+#+end_quote

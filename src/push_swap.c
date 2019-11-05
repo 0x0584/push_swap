@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/05 15:30:06 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/05 15:55:44 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,16 +72,16 @@ int main(int argc, char **argv)
 		helper_node_dump(walk);
 		walk = walk->next;
 	}
-	ft_printf("////\n");
+	ft_dprintf(2, "////\n");
 	walk = ps_a->tail;
 	while (walk)
 	{
 		helper_node_dump(walk);
 		walk = walk->prev;
 	}
-	ft_printf("////\n");
+	ft_dprintf(2, "////\n");
 	walk = NULL;
-	/* getchar(); */
+	/* getchar();\ */
 
 	ps_b = ps_alloc('B', ps_a->size);
 	push_swap(ps_a, ps_b);

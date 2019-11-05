@@ -6,14 +6,13 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/05 15:30:38 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/05 15:53:45 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ps.h"
 #include "op.h"
 #include "ft_printf.h"
-
 
 bool	helper_end_split(t_ps a, t_ps_node *mids)
 {
@@ -38,16 +37,16 @@ void	ps_dump(t_ps ps)
 
 	if (!ps)
 		return ;
-	printf("stack: %c[%zu/%zu]\n------------------\n",
+	ft_dprintf(2, "stack: %c[%zu/%zu]\n------------------\n",
 			ps->symb, ps->len, ps->size);
 	walk = ps->head;
 	while (walk)
 	{
 		node = (t_ps_node *)walk->blob;
-		printf("{%p/%d: %d}\n", walk, node->ord, node->val);
+		ft_dprintf(2, "{%p/%d: %d}\n", walk, node->ord, node->val);
 		walk = walk->next;
 	}
-	printf("------------------\n");
+	ft_dprintf(2, "------------------\n");
 }
 
 t_ps	ps_alloc(char symb, size_t size)
@@ -164,7 +163,7 @@ void	ps_find_mids(t_ps a, t_ps_node *mids)
 		if (index++)
 			walk = NULL;
 	}
-	ft_printf("lower mid: %d higher mid: %d\n", mids[0].val, mids[1].val);
+	ft_dprintf(2, "lower mid: %d higher mid: %d\n", mids[0].val, mids[1].val);
 	/* getchar(); */
 	ps_del(&sorted_a);
 }
@@ -181,7 +180,7 @@ void	ps_split_ranges(t_ps a, t_ps b, t_lst *ops)
 	turn = 0;
 	while (a->len > 2)
 	{
-		ft_printf("splitting on turn {%d}\n", turn);
+		ft_dprintf(2, "splitting on turn {%d}\n", turn);
 		ps_find_mids(a, mids);
 		/* ft_printf("turn: %d\n ]]] val: %d ord: %d\n", turn, */
 		/* 			mids[0].val, mids[0].ord); */
@@ -272,19 +271,19 @@ void	ps_refill(t_ps a, t_ps b, t_lst *ops)
 	ps_sort_remainder(a, ops);
 	dump_stacks(a, b);
 	is_firsttime = true;
-	ft_printf("refilling!\n");
+	ft_dprintf(2, "refilling!\n");
 	while (b->len)
 	{
 		head = GET_PS_NODE(b->head);
 		tail = GET_PS_NODE(ft_dlst_gettail(b->head));
 		/* tail = GET_PS_NODE(b->tail); */
-		ft_printf("{%d} head: %d tail: %d\n", turn++, head->val, tail->val);
+		ft_dprintf(2, "{%d} head: %d tail: %d\n", turn++, head->val, tail->val);
 		if (head->val < tail->val)
 		{
 			op_dorot(b, false);
 			op = OP_INIT(OP_RROT, APPLY_ON_B);
 			ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
-			ft_putendl("rotating stack B!!\n");
+			ft_dprintf(2, "rotating stack B!!\n");
 			dump_stacks(a, b);
 			/* getchar(); */
 		}
@@ -293,7 +292,7 @@ void	ps_refill(t_ps a, t_ps b, t_lst *ops)
 		op = OP_INIT(OP_PUSH, APPLY_ON_A);
 		ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
 		dump_stacks(a, b);
-		ft_printf("after pushing\n");
+		ft_dprintf(2, "after pushing\n");
 		/* getchar(); */
 		/* break; */
 	}

@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:41:51 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/05 14:02:38 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/05 15:48:12 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,16 @@ void		op_dump(t_op op)
 
 	prefix = "psrr";
 	suffix = "ab";
-	printf("op is: %c", prefix[op.op]);
+	ft_printf("%c", prefix[op.op]);
 	if (op.op == OP_RROT)
-		printf("%c", 'r');
+		ft_printf("%c", 'r');
 	if (op.which != APPLY_ON_BOTH)
-		printf("%c", suffix[op.which]);
+		ft_printf("%c", suffix[op.which]);
 	else if (op.op == OP_ROT || op.op == OP_RROT)
-		printf("%c", 'r');
+		ft_printf("%c", 'r');
 	else
-		printf("%c", 's');
-	printf("\n");
+		ft_printf("%c", 's');
+	ft_printf("\n");
 }
 
 bool		op_isvalid(char const *str, t_op *op)
@@ -87,7 +87,7 @@ bool		op_dopsh(t_ps dest, t_ps src)
 {
 	if (!dest || !src || !src->len || dest->len == dest->size)
 		return (false);
-	ft_printf(">> APPLYING OP: %{red_fg}p%c%{reset}\n", dest->symb);
+	ft_dprintf(2, ">> APPLYING OP: %{red_fg}p%c%{reset}\n", dest->symb);
 	ft_dlstadd(&dest->head, ft_dlstpeek(&src->head));
 	src->len--;
 	dest->len++;
@@ -101,7 +101,7 @@ bool		op_doswp(t_ps ps)
 
 	if (!ps || ps->len < 2)
 		return (false);
-	ft_printf(">> APPLYING OP: %{red_fg}s%c%{reset}\n", ps->symb);
+	ft_dprintf(2, ">> APPLYING OP: %{red_fg}s%c%{reset}\n", ps->symb);
 	foo = ft_dlstpeek(&ps->head);
 	bar = ft_dlstpeek(&ps->head);
 	ft_dlstadd(&ps->head, foo);
@@ -119,7 +119,7 @@ bool		op_dorot(t_ps ps, bool is_up)
 		return (false);
 	else if (ps->len == 2)
 		return (op_doswp(ps));
-	ft_printf(">> APPLYING OP: %{red_fg}r%c%c%{reset}\n",
+	ft_dprintf(2, ">> APPLYING OP: %{red_fg}r%c%c%{reset}\n",
 				!is_up ? 'r' : '\0', ps->symb);
 	if (is_up)
 		node = ft_dlstpeek(&ps->head);
