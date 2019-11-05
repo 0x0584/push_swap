@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/02 21:10:12 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/05 15:30:06 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,34 @@
 #include "reader.h"
 #include "ft_printf.h"
 
+void helper_op_dump(t_lst e)
+{
+	t_op *op;
+
+	op = e->content;
+	op_dump(*op);
+}
+
+void helper_op_free(void *content, size_t size)
+{
+	if (size)
+		free(content);
+}
+
 /* NOTE: for the moment solve the main case: 8 5 6 3 1 2 */
 void	push_swap(t_ps a, t_ps b)
 {
+	t_lst ops;
 
-	ps_split_ranges(a, b);
-	ps_refill(a, b);
+	ops = NULL;
+
+	if (!ps_issorted(a, b))
+	{
+		ps_split_ranges(a, b, &ops);
+		ps_refill(a, b, &ops);
+	}
+	ft_lstiter(ops, helper_op_dump);
+	ft_lstdel(&ops, helper_op_free);
 
 	/* fill_stack_b(a, b, find_mids(sorted_a, mids)); */
 }
@@ -43,6 +65,22 @@ int main(int argc, char **argv)
 	/* ft_dlstiter(ps_a->head, helper_node_dump); */
 	/* op_dorot(ps_a, true); */
 	/* ft_dlstiter(ps_a->head, helper_node_dump); */
+	/* getchar(); */
+	walk = ps_a->head;
+	while (walk)
+	{
+		helper_node_dump(walk);
+		walk = walk->next;
+	}
+	ft_printf("////\n");
+	walk = ps_a->tail;
+	while (walk)
+	{
+		helper_node_dump(walk);
+		walk = walk->prev;
+	}
+	ft_printf("////\n");
+	walk = NULL;
 	/* getchar(); */
 
 	ps_b = ps_alloc('B', ps_a->size);

@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 20:42:23 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/02 13:55:20 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/05 14:53:35 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,13 @@ int		main(int argc, char *argv[])
 		return (EXIT_FAILURE);
 	/* ps_dump(ps_a); */
 	ps_b = ps_alloc('B', ps_a->size);
-	ops = example();
-	/* ops = read_input(); */
+	/* ops = example(); */
+	ops = read_input();
 
 	walk = ops;
 	failed = false;
 	ft_putendl(" >>> INITIAL STATE");
-	ps_dump(ps_a); ps_dump(ps_b);
+	dump_stacks(ps_a, ps_b);
 	ft_putendl(" ============ ");
 	while (walk)
 	{
@@ -86,14 +86,14 @@ int		main(int argc, char *argv[])
 		op_dump(*op);
 		failed = !op_apply(*op, ps_a, ps_b);
 		printf("%s\n", failed ? "KO" : "OK");
-		ps_dump(ps_a); ps_dump(ps_b);
+		dump_stacks(ps_a, ps_b);
 		ft_putendl("");
 		if (failed)
 			break ;
 		walk = walk->next;
 	}
 	ft_putendl(" >>> FINAL STATE");
-	ps_dump(ps_a); ps_dump(ps_b);
+	dump_stacks(ps_a, ps_b);
 	ft_putendl(" ============ ");
 
 	printf("is stack sorted? %s\n", ps_issorted(ps_a, ps_b) ? "OK" : "KO");

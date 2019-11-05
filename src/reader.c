@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 21:36:42 by archid-           #+#    #+#             */
-/*   Updated: 2019/10/29 02:17:44 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/04 20:42:48 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,9 @@ t_ps	read_args(int ac, char**av)
 	t_ps		stack;
 	long		val;
 	int			i;
-	bool		flag;
 
 	if (ac < 2 || !SAFE_PTRVAL(av))
 		return (NULL);
-	flag = true;
 	i = 0;
 	stack = ps_alloc('A', (size_t)--ac);
 	stack->len = ac;
@@ -36,11 +34,9 @@ t_ps	read_args(int ac, char**av)
 			break ;
 		}
 		node = (t_ps_node){.ord = ac - i++, .val = (int)val};
-		ft_dlstadd(&stack->head, ft_dlstnew(&node, sizeof(t_ps_node)));
-		if (flag)
-			stack->tail = stack->head;
-		flag = false;
+		ft_dlstpush(&stack->head, ft_dlstnew(&node, sizeof(t_ps_node)));
 	}
+	stack->tail = ft_dlst_gettail(stack->head);
 	return (stack);
 }
 
