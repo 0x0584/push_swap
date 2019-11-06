@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:10:29 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/05 14:50:26 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/05 20:48:06 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ bool		ps_issorted(t_ps ps_a, t_ps ps_b);
 t_ps		ps_mergesort(t_ps ps);
 t_ps		ps_clone(t_ps const ps);
 void		helper_node_dump(t_dlst e);
-t_range		ps_whichrange(t_ps a, t_ps_node *mids);
+t_range		ps_whichrange(t_val val, t_ps_node *mids);
 void		ps_split_ranges(t_ps a, t_ps b, t_lst *ops);
 void		ps_find_mids(t_ps sorted_a, t_ps_node *mids);
 void		ps_refill(t_ps a, t_ps b, t_lst *ops);
@@ -75,5 +75,6 @@ void		ps_sort_remainder(t_ps a, t_lst *ops);
 
 void		helper_node_dump(t_dlst e);
 void		dump_stacks(t_ps a, t_ps b);
+bool		helper_end_split(t_ps a, t_ps_node *mids);
 
 #endif

@@ -6,29 +6,13 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/05 15:53:45 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/06 01:02:41 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ps.h"
 #include "op.h"
 #include "ft_printf.h"
-
-bool	helper_end_split(t_ps a, t_ps_node *mids)
-{
-	t_dlst	walk;
-	bool	flag;
-
-	flag = false;
-	walk = a->head;
-	while (walk)
-	{
-		if ((flag = GET_PS_NODE(walk)->val < mids[1].val))
-			break ;
-		walk = walk->next;
-	}
-	return (flag);
-}
 
 void	ps_dump(t_ps ps)
 {
@@ -114,7 +98,6 @@ int		ps_node_cmp(t_dlst foo, t_dlst bar)
 	return (GET_PS_NODE(bar)->val - GET_PS_NODE(foo)->val);
 }
 
-
 t_ps	ps_mergesort(t_ps ps)
 {
 	t_ps sorted;
@@ -125,15 +108,14 @@ t_ps	ps_mergesort(t_ps ps)
 	return (sorted);
 }
 
-t_range		ps_whichrange(t_ps a, t_ps_node *mids)
+t_range		ps_whichrange(t_val val, t_ps_node *mids)
 {
-	if (!a)
+	if (!mids)
 		return (RANGE_NA);
-	/* TODO: check whther mid is included or excluded */
-	if (GET_PS_NODE(a->head)->val < mids[0].val)
+	/* TODO: check whether mid is included or excluded */
+	if (val < mids[0].val)
 		return (RANGE_LOW);
-	else if (GET_PS_NODE(a->head)->val >= mids[0].val
-				&& GET_PS_NODE(a->head)->val < mids[1].val)
+	else if (val >= mids[0].val && val < mids[1].val)
 		return (RANGE_MID);
 	return (RANGE_HIGH);
 }
@@ -160,12 +142,54 @@ void	ps_find_mids(t_ps a, t_ps_node *mids)
 		while (i++ < ONE_THIRD(a->len))
 			walk = walk->next;
 		mids[index] = *GET_PS_NODE(walk);
-		if (index++)
-			walk = NULL;
+		if (index++) walk = NULL;
 	}
 	ft_dprintf(2, "lower mid: %d higher mid: %d\n", mids[0].val, mids[1].val);
 	/* getchar(); */
 	ps_del(&sorted_a);
+}
+
+/* TODO: check intra access tomorrow! */
+
+void	ps_takefrom_best(t_ps a, t_ps b, t_lst *ops)
+{
+	t_ps_node	*head;
+	t_ps_node	*tail;
+	t_op		op;		/* HERE EITHER HEAD OR TAIL */
+
+	head = GET_PS_NODE(a->head);
+	ft_dprintf(2, "Current node"); helper_node_dump(a->head); ft_dprintf(2, "\n");
+	if (head->range == RANGE_LOW || head->range == RANGE_MID)
+	{
+		op_dopsh(b, a);
+		op = OP_INIT(OP_PUSH, APPLY_ON_B);
+		ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
+	}
+	if (head->range == RANGE_LOW && b->len > 1)
+	{
+		op_dorot(b, true);
+		op = OP_INIT(OP_ROT, APPLY_ON_B);
+		ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
+	}
+	if (head->range == RANGE_HIGH)
+	{
+		op_dorot(a, true);
+		op = OP_INIT(OP_ROT, APPLY_ON_A);
+		ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
+	}
+}
+
+void	ps_setranges(t_ps a, int turn, t_ps_node *mids)
+{
+	t_dlst walk;
+
+	walk = a->head;
+	while (walk)
+	{
+		GET_PS_NODE(walk)->turn = turn;
+		GET_PS_NODE(walk)->range = ps_whichrange(GET_PS_NODE(walk)->val, mids);
+		walk = walk->next;
+	}
 }
 
 void	ps_split_ranges(t_ps a, t_ps b, t_lst *ops)
@@ -174,6 +198,8 @@ void	ps_split_ranges(t_ps a, t_ps b, t_lst *ops)
 	t_range		range;
 	int			turn;
 	t_op		op;
+	t_ps_node	*head;
+	t_ps_node	*tail;
 
 	/* ft_printf("??\nInitial things\n"); */
 	/* dump_stacks(a, b); */
@@ -181,46 +207,15 @@ void	ps_split_ranges(t_ps a, t_ps b, t_lst *ops)
 	while (a->len > 2)
 	{
 		ft_dprintf(2, "splitting on turn {%d}\n", turn);
-		ps_find_mids(a, mids);
-		/* ft_printf("turn: %d\n ]]] val: %d ord: %d\n", turn, */
-		/* 			mids[0].val, mids[0].ord); */
-		/* ft_printf(" ]]] val: %d ord: %d\nnew turn!!", */
-		/* 		  mids[1].val, mids[1].ord); */
+		(void)ps_find_mids(a, mids);
+		ps_setranges(a, turn, mids);
 		/* getchar(); */
-
 		while (helper_end_split(a, mids))
 		{
-			range = ps_whichrange(a, mids);
-			/* ft_printf("val: %d is in range %d\n", */
-			/* 			GET_PS_NODE(a->head)->val, range); */
-			GET_PS_NODE(a->head)->turn = turn;
-			GET_PS_NODE(a->head)->range = range;
-			if (range == RANGE_LOW || range == RANGE_MID)
-			{
-				op_dopsh(b, a);
-				op = OP_INIT(OP_PUSH, APPLY_ON_B);
-				ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
-			}
-			if (range == RANGE_LOW && b->len > 1)
-			{
-				op_dorot(b, true);
-				op = OP_INIT(OP_ROT, APPLY_ON_B);
-				ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
-			}
-			if (range == RANGE_HIGH)
-			{
-				op_dorot(a, true);
-				op = OP_INIT(OP_ROT, APPLY_ON_A);
-				ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
-			}
+			ps_takefrom_best(a, b, ops);
 			dump_stacks(a, b);
 			/* getchar(); */
-
-			/* if (ps_issorted(a, NULL)) */
-			/* 	break ; */
 		}
-		/* dump_stacks(a, b); */
-		/* getchar(); */
 		turn++;
 	}
 }
@@ -246,12 +241,70 @@ void	ps_sort_remainder(t_ps a, t_lst *ops)
 	}
 }
 
-int		ps_whichturn(t_ps b)
+int		ps_whichturn(t_ps ps)
 {
-	int turn = 0;
+	int turn;
 	t_dlst walk;
 
-	return MAX(GET_PS_NODE(b->head)->turn, GET_PS_NODE(b->tail)->turn);
+	turn = -1;
+	walk = ps->head;
+	while (walk)
+	{
+		if (turn < GET_PS_NODE(walk)->turn)
+			turn = GET_PS_NODE(walk)->turn;
+		walk = walk->next;
+	}
+	return turn;
+}
+
+t_range		ps_current_range(t_ps b, int turn)
+{
+	t_dlst walk;
+
+	walk = b->head;
+	while (walk)
+	{
+		if (GET_PS_NODE(walk)->turn == turn
+				&& GET_PS_NODE(walk)->range == RANGE_MID)
+			return RANGE_MID;
+		walk = walk->next;
+	}
+	return RANGE_LOW;
+}
+
+int		ps_find_largest_node(t_ps ps)
+{
+	t_dlst	walk;
+	int		i;
+	int		index;
+	int		turn;
+	t_range range;
+	t_val max;
+	t_ps_node *node;
+
+	if (!ps)
+		return (-1);
+
+	i = 0;
+	index = -1;
+	walk = ps->head;
+	turn = ps_whichturn(ps);
+	range = ps_current_range(ps, turn);
+	max = GET_PS_NODE(walk)->val;
+	while (walk)
+	{
+		if (GET_PS_NODE(walk)->turn == turn && GET_PS_NODE(walk)->range == range
+				&& GET_PS_NODE(walk)->val >= max)
+		{
+			max = GET_PS_NODE(walk)->val;
+			index = i;
+		}
+		i++;
+		walk = walk->next;
+	}
+	ft_dprintf(2, "index of the largest node is: %{yellow_fg}%d%{reset}\n", index);
+	/* getchar(); */
+	return (index);
 }
 
 void	ps_refill(t_ps a, t_ps b, t_lst *ops)
@@ -262,31 +315,68 @@ void	ps_refill(t_ps a, t_ps b, t_lst *ops)
 	bool	is_firsttime;
 	t_ps_node *head, *tail;
 	t_op op;
+	t_range range;
+	t_dlst walk;
 
 	if (!a || !b)
 		return ;
 	is_up = true;
-	turn = 0;
 	rotate_count = 0;
 	ps_sort_remainder(a, ops);
 	dump_stacks(a, b);
 	is_firsttime = true;
 	ft_dprintf(2, "refilling!\n");
+	/* getchar(); */
 	while (b->len)
 	{
 		head = GET_PS_NODE(b->head);
 		tail = GET_PS_NODE(ft_dlst_gettail(b->head));
 		/* tail = GET_PS_NODE(b->tail); */
-		ft_dprintf(2, "{%d} head: %d tail: %d\n", turn++, head->val, tail->val);
-		if (head->val < tail->val)
+		ft_dprintf(2, "{%d} head: %d tail: %d\n", turn++,
+					head->val, tail->val);
+		// NOTE: here I shall take the biggest one of the biggest turn
+		// and prioritize RANGE_MID over RANGE_SMALL
+
+
+		// get the target node and its index:
+		int node_index = ps_find_largest_node(b);
+
+		if (node_index == -1)
 		{
-			op_dorot(b, false);
-			op = OP_INIT(OP_RROT, APPLY_ON_B);
-			ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
-			ft_dprintf(2, "rotating stack B!!\n");
-			dump_stacks(a, b);
+			ft_dprintf(2, "NODE INDEX SHOULD NOT BE NEGATIVE! ABORT!");
 			/* getchar(); */
+			exit(0);
 		}
+
+		if (!b->len || (is_up = (node_index <= (int)b->len / 2)))
+			rotate_count = node_index;
+		else
+			rotate_count = (int)b->len % node_index;
+
+		ft_dprintf(2, "node index %d \n half b->len %d \n rotation count %d\n",
+				   node_index, (int)b->len / 2, rotate_count);
+		/* getchar(); */
+
+		ft_dprintf(2, " >> rotate_count %d and rotation is %s\n",
+					rotate_count, is_up ? "normal" : "reversed");
+		/* getchar(); */
+		/* walk = b->head; */
+		while (rotate_count--)
+		{
+			op_dorot(b, is_up);
+			op = OP_INIT(is_up ? OP_ROT : OP_RROT, APPLY_ON_B);
+			ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
+		}
+		/* getchar(); */
+		/* if (head->val < tail->val) */
+		/* { */
+		/* 	op_dorot(b, false); */
+		/* 	op = OP_INIT(OP_RROT, APPLY_ON_B); */
+		/* 	ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op))); */
+		/* 	ft_dprintf(2, "rotating stack B!!\n"); */
+		/* 	dump_stacks(a, b); */
+		/* 	getchar(); */
+		/* } */
 
 		op_dopsh(a, b);
 		op = OP_INIT(OP_PUSH, APPLY_ON_A);

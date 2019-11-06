@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/05 15:55:44 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/06 01:27:12 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,12 @@ void	push_swap(t_ps a, t_ps b)
 	t_lst ops;
 
 	ops = NULL;
-
 	if (!ps_issorted(a, b))
 	{
 		ps_split_ranges(a, b, &ops);
 		ps_refill(a, b, &ops);
 	}
+
 	ft_lstiter(ops, helper_op_dump);
 	ft_lstdel(&ops, helper_op_free);
 

@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 20:42:23 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/05 15:47:03 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/06 01:18:06 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,24 +79,24 @@ int		main(int argc, char *argv[])
 	failed = false;
 	ft_dprintf(2, " >>> INITIAL STATE");
 	dump_stacks(ps_a, ps_b);
-	ft_putendl(" ============ ");
+	ft_putendl_fd(" ============ ", 2);
 	while (walk)
 	{
 		op = (t_op *)walk->content;
-		op_dump(*op);
+		/* op_dump(*op); */
 		failed = !op_apply(*op, ps_a, ps_b);
 		ft_dprintf(2, "%s\n", failed ? "KO" : "OK");
 		dump_stacks(ps_a, ps_b);
-		ft_putendl("");
+		ft_putendl_fd("", 2);
 		if (failed)
 			break ;
 		walk = walk->next;
 	}
 	ft_dprintf(2, " >>> FINAL STATE");
 	dump_stacks(ps_a, ps_b);
-	ft_dprintf(2, " ============ ");
+	ft_dprintf(2, " ============ \n");
 
-	ft_dprintf(2, "is stack sorted? %s\n",
+	ft_printf("is stack sorted? %s\n",
 			   ps_issorted(ps_a, ps_b) ? "OK" : "KO");
 
 	ft_lstdel(&ops, lstdel_helper);

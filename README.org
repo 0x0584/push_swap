@@ -23,5 +23,14 @@ Correction would be on: <2019-11-10 Sun 16:00> or maybe earlier, depends on tech
 + [ ] larger input :: input.txt *FAILED* nothing is sorted eventually
 
 #+begin_quote
+*UNDEFINED BEHAVIOR*
+
 it seems like nothing is working! the trick of splitting works fine with smaller input, but it's not working with a larger input. probably because I do not put stuff into their place. Onion splitting is working fine, I might just rotation stack A to put the items in place. One idea that comes to mind is to get use a sorted version to track the order and then rotate based on that order.
 #+end_quote
+
+/Explanation:/ this is was because in terms of turn, I shall start picking nodes from biggest to the lowest, and /RANGE_MID/ before /RANGE_LOW/. This should not affect the previous tests, hopefully.
+
+<2019-11-06 Wed 01:10> it is working! but, I got much more instructions than expected:
+
++ for 100_random_input I got 650 instructions, which is quite acceptable
++ for 500_random_input I got a fucking

@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:41:51 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/05 15:48:12 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/06 01:25:57 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,10 +117,10 @@ bool		op_dorot(t_ps ps, bool is_up)
 
 	if (!ps || ps->len < 2)
 		return (false);
-	else if (ps->len == 2)
-		return (op_doswp(ps));
-	ft_dprintf(2, ">> APPLYING OP: %{red_fg}r%c%c%{reset}\n",
-				!is_up ? 'r' : '\0', ps->symb);
+	/* else if (ps->len == 2) */
+	/* 	return (op_doswp(ps)); */
+	ft_dprintf(2, ">> APPLYING OP: %{red_fg}r%s%c%{reset}\n",
+			   !is_up ? "r" : "", ps->symb);
 	if (is_up)
 		node = ft_dlstpeek(&ps->head);
 	else
