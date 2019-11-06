@@ -6,14 +6,14 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:16:42 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/05 21:17:34 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/06 13:31:42 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "op.h"
 #include "ft_printf.h"
 
-bool	helper_end_split(t_ps a, t_ps_node *mids)
+bool	helper_end_split(t_ps a)
 {
 	t_dlst	walk;
 	bool	flag;
@@ -22,7 +22,7 @@ bool	helper_end_split(t_ps a, t_ps_node *mids)
 	walk = a->head;
 	while (walk)
 	{
-		if ((flag = GET_PS_NODE(walk)->val < mids[1].val))
+		if ((flag = GET_PS_NODE(walk)->range == RANGE_LOW))
 			break ;
 		walk = walk->next;
 	}
@@ -38,9 +38,6 @@ void	helper_node_dump(t_dlst e)
 	/* TODO: update repo's libft */
 	if (GET_PS_NODE(e)->range == RANGE_LOW)
 		ft_dprintf(2, "%{green_fg}%4d(%d)%{reset} ",
-				  GET_PS_NODE(e)->val, GET_PS_NODE(e)->turn);
-	else if (GET_PS_NODE(e)->range == RANGE_MID)
-		ft_dprintf(2, "%{blue_fg}%4d(%d)%{reset} ",
 				  GET_PS_NODE(e)->val, GET_PS_NODE(e)->turn);
 	else if (GET_PS_NODE(e)->range == RANGE_HIGH)
 		ft_dprintf(2, "%{red_fg}%4d(%d)%{reset} ",
@@ -66,9 +63,6 @@ void	ps_fdump(t_ps ps)
 	{
 		if (GET_PS_NODE(walk)->range == RANGE_LOW)
 			ft_dprintf(2, "%{green_fg}%4d(%d)%{reset} ",
-					   GET_PS_NODE(walk)->val, GET_PS_NODE(walk)->turn);
-		else if (GET_PS_NODE(walk)->range == RANGE_MID)
-			ft_dprintf(2, "%{blue_fg}%4d(%d)%{reset} ",
 					   GET_PS_NODE(walk)->val, GET_PS_NODE(walk)->turn);
 		else if (GET_PS_NODE(walk)->range == RANGE_HIGH)
 			ft_dprintf(2, "%{red_fg}%4d(%d)%{reset} ",

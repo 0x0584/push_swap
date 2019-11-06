@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/06 02:20:40 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/09 19:47:03 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,113 +108,97 @@ t_ps	ps_mergesort(t_ps ps)
 	return (sorted);
 }
 
-t_range		ps_whichrange(t_val val, t_ps_node *mids)
+t_range		ps_whichrange(t_val val, t_ps_node *mid)
 {
-	if (!mids)
-		return (RANGE_NA);
 	/* TODO: check whether mid is included or excluded */
-	if (val < mids[0].val)
+	if (val < mid->val)
 		return (RANGE_LOW);
-	else if (val >= mids[0].val && val < mids[1].val)
-		return (RANGE_MID);
 	return (RANGE_HIGH);
 }
 
-void	ps_find_mids(t_ps a, t_ps_node *mids)
+t_ps_node	*ps_find_mids(t_ps a)
 {
-	/* look for 1/2 and 2/3 */
-	size_t	i;
-	short	index;
-	t_dlst	walk;
-	t_ps	sorted_a;
+	short		index;
+	t_dlst		walk;
+	t_ps_node	*mid;
+	t_ps		sorted_a;
 
-	if (!a || !mids)
-		return ;
+	if (!a)
+		return NULL;
 	index = 0;
 	sorted_a = ps_mergesort(a);
-	/* ft_dlstiter(sorted_a->head, helper_node_dump); */
-	/* ft_putendl("dumped!"); */
-	/* getchar(); */
 	walk = sorted_a->head;
-	while (walk)
+	while (walk && index < (int)sorted_a->len / 2)
 	{
-		i = 0;
-		while (i++ < ONE_THIRD(a->len))
-			walk = walk->next;
-		mids[index] = *GET_PS_NODE(walk);
-		if (index++) walk = NULL;
+		index++;
+		walk = walk->next;
 	}
-	ft_dprintf(2, "lower mid: %d higher mid: %d\n", mids[0].val, mids[1].val);
-	/* getchar(); */
+	mid = GET_PS_NODE(walk);
+	ft_dprintf(2, "mid is %d\n", mid->val);
 	ps_del(&sorted_a);
+	return mid;
 }
 
-/* TODO: check intra access tomorrow! */
+/*
+   this shall always pick the best way to get a node.
+   ie, based on the distribution of the numbers, find
+   the best way to pick them. That's the key to the highway!
+*/
 
 void	ps_takefrom_best(t_ps a, t_ps b, t_lst *ops)
 {
 	t_ps_node	*head;
 	t_ps_node	*tail;
-	t_op		op;		/* HERE EITHER HEAD OR TAIL */
+	t_op		op;
 	bool		is_up;
 
 	head = GET_PS_NODE(a->head);
 	tail = GET_PS_NODE(ft_dlst_gettail(a->head));
-	ft_dprintf(2, "Current node"); helper_node_dump(a->head); ft_dprintf(2, "\n");
-	if (head->range == RANGE_LOW || head->range == RANGE_MID)
+	ft_dprintf(2, "Current node"); helper_node_dump(a->head);
+	ft_dprintf(2, "\n");
+	if (head->range == RANGE_LOW)
 	{
 		op_dopsh(b, a);
 		op = OP_INIT(OP_PUSH, APPLY_ON_B);
 		ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
 	}
-	if (head->range == RANGE_LOW && b->len > 1)
+	else if (head->range == RANGE_HIGH)
 	{
-		op_dorot(b, true);
-		op = OP_INIT(OP_ROT, APPLY_ON_B);
-		ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
-	}
-	if (head->range == RANGE_HIGH)
-	{
-		is_up = (tail->range == RANGE_LOW
-					|| tail->range == RANGE_HIGH);
+		is_up = (tail->range == RANGE_HIGH);
+		/* is_up = true; */
 		op_dorot(a, is_up);
 		op = OP_INIT(is_up ? OP_ROT : OP_RROT, APPLY_ON_A);
 		ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
 	}
 }
 
-void	ps_setranges(t_ps a, int turn, t_ps_node *mids)
+void	ps_setranges(t_ps a, int turn)
 {
 	t_dlst walk;
 
+	a->mid = ps_find_mids(a);
 	walk = a->head;
 	while (walk)
 	{
 		GET_PS_NODE(walk)->turn = turn;
-		GET_PS_NODE(walk)->range = ps_whichrange(GET_PS_NODE(walk)->val, mids);
+		GET_PS_NODE(walk)->range =
+			ps_whichrange(GET_PS_NODE(walk)->val, a->mid);
 		walk = walk->next;
 	}
 }
 
 void	ps_split_ranges(t_ps a, t_ps b, t_lst *ops)
 {
-	t_ps_node	mids[2];
-	t_range		range;
-	int			turn;
-	t_op		op;
-	t_ps_node	*head;
-	t_ps_node	*tail;
+	int	turn;
 
-	/* ft_printf("??\nInitial things\n"); */
-	/* dump_stacks(a, b); */
 	turn = 0;
 	while (a->len > 2)
 	{
 		ft_dprintf(2, "splitting on turn {%d}\n", turn);
-		(void)ps_find_mids(a, mids);
-		ps_setranges(a, turn, mids);
+		ps_setranges(a, turn);
+		ft_dprintf(2, "this is the current mid %d", a->mid->val);
 		/* getchar(); */
-		while (helper_end_split(a, mids))
+		while (helper_end_split(a))
 		{
 			ps_takefrom_best(a, b, ops);
 			dump_stacks(a, b);
@@ -273,11 +257,11 @@ t_range		ps_current_range(t_ps b, int turn)
 	while (walk)
 	{
 		if (GET_PS_NODE(walk)->turn == turn
-				&& GET_PS_NODE(walk)->range == RANGE_MID)
-			return RANGE_MID;
+				&& GET_PS_NODE(walk)->range == RANGE_LOW)
+			return RANGE_LOW;
 		walk = walk->next;
 	}
-	return RANGE_LOW;
+	return RANGE_HIGH;
 }
 
 int		ps_find_largest_node(t_ps ps)
@@ -301,7 +285,8 @@ int		ps_find_largest_node(t_ps ps)
 	max = GET_PS_NODE(walk)->val;
 	while (walk)
 	{
-		if (GET_PS_NODE(walk)->turn == turn && GET_PS_NODE(walk)->range == range
+		if (GET_PS_NODE(walk)->turn == turn
+				&& GET_PS_NODE(walk)->range == range
 				&& GET_PS_NODE(walk)->val >= max)
 		{
 			node = GET_PS_NODE(walk);
@@ -313,7 +298,6 @@ int		ps_find_largest_node(t_ps ps)
 	}
 	ft_dprintf(2, "index of the largest node (%{cyan_fg}%d%{reset}) "
 			   "is: %{yellow_fg}%d%{reset}\n", index, node->val);
-	/* getchar(); */
 	return (index);
 }
 
@@ -344,56 +328,28 @@ void	ps_refill(t_ps a, t_ps b, t_lst *ops)
 		/* tail = GET_PS_NODE(b->tail); */
 		ft_dprintf(2, "{%d} head: %d tail: %d\n", turn++,
 					head->val, tail->val);
-		// NOTE: here I shall take the biggest one of the biggest turn
-		// and prioritize RANGE_MID over RANGE_SMALL
-
-
-		// get the target node and its index:
 		int node_index = ps_find_largest_node(b);
-
-		if (node_index == -1)
-		{
-			ft_dprintf(2, "NODE INDEX SHOULD NOT BE NEGATIVE! ABORT!");
-			/* getchar(); */
-			exit(0);
-		}
 
 		if (!b->len || (is_up = (node_index <= (int)b->len / 2)))
 			rotate_count = node_index;
 		else
 			rotate_count = (int)b->len % node_index;
-
 		ft_dprintf(2, "node index %d \n half b->len %d \n rotation count %d\n",
 				   node_index, (int)b->len / 2, rotate_count);
-		/* getchar(); */
-
 		ft_dprintf(2, " >> rotate_count %d and rotation is %s\n",
 					rotate_count, is_up ? "normal" : "reversed");
 		/* getchar(); */
-		/* walk = b->head; */
 		while (rotate_count--)
 		{
 			op_dorot(b, is_up);
 			op = OP_INIT(is_up ? OP_ROT : OP_RROT, APPLY_ON_B);
 			ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
 		}
-		/* getchar(); */
-		/* if (head->val < tail->val) */
-		/* { */
-		/* 	op_dorot(b, false); */
-		/* 	op = OP_INIT(OP_RROT, APPLY_ON_B); */
-		/* 	ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op))); */
-		/* 	ft_dprintf(2, "rotating stack B!!\n"); */
-		/* 	dump_stacks(a, b); */
-		/* 	getchar(); */
-		/* } */
-
 		op_dopsh(a, b);
 		op = OP_INIT(OP_PUSH, APPLY_ON_A);
 		ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
 		dump_stacks(a, b);
 		ft_dprintf(2, "after pushing\n");
 		/* getchar(); */
-		/* break; */
 	}
 }

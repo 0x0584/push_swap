@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:10:29 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/05 20:48:06 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/06 12:54:11 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ typedef int		t_val;
 typedef enum	e_ranges
 {
 	RANGE_LOW,
-	RANGE_MID,
 	RANGE_HIGH,
 	RANGE_NA
 }				t_range;
@@ -57,7 +56,7 @@ typedef struct s_ps_ds
 
 	size_t	len;
 	size_t	size;
-	t_ps_node *mids;
+	t_ps_node *mid;
 }				*t_ps;
 
 t_ps		ps_alloc(char symb, size_t size);
@@ -67,14 +66,14 @@ bool		ps_issorted(t_ps ps_a, t_ps ps_b);
 t_ps		ps_mergesort(t_ps ps);
 t_ps		ps_clone(t_ps const ps);
 void		helper_node_dump(t_dlst e);
-t_range		ps_whichrange(t_val val, t_ps_node *mids);
 void		ps_split_ranges(t_ps a, t_ps b, t_lst *ops);
-void		ps_find_mids(t_ps sorted_a, t_ps_node *mids);
+t_range		ps_whichrange(t_val val, t_ps_node *mid);
+t_ps_node 	*ps_find_mids(t_ps sorted_a);
 void		ps_refill(t_ps a, t_ps b, t_lst *ops);
 void		ps_sort_remainder(t_ps a, t_lst *ops);
 
 void		helper_node_dump(t_dlst e);
 void		dump_stacks(t_ps a, t_ps b);
-bool		helper_end_split(t_ps a, t_ps_node *mids);
+bool		helper_end_split(t_ps a);
 
 #endif
