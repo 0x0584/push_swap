@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/06 01:02:41 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/06 02:20:40 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,8 +156,10 @@ void	ps_takefrom_best(t_ps a, t_ps b, t_lst *ops)
 	t_ps_node	*head;
 	t_ps_node	*tail;
 	t_op		op;		/* HERE EITHER HEAD OR TAIL */
+	bool		is_up;
 
 	head = GET_PS_NODE(a->head);
+	tail = GET_PS_NODE(ft_dlst_gettail(a->head));
 	ft_dprintf(2, "Current node"); helper_node_dump(a->head); ft_dprintf(2, "\n");
 	if (head->range == RANGE_LOW || head->range == RANGE_MID)
 	{
@@ -173,8 +175,10 @@ void	ps_takefrom_best(t_ps a, t_ps b, t_lst *ops)
 	}
 	if (head->range == RANGE_HIGH)
 	{
-		op_dorot(a, true);
-		op = OP_INIT(OP_ROT, APPLY_ON_A);
+		is_up = (tail->range == RANGE_LOW
+					|| tail->range == RANGE_HIGH);
+		op_dorot(a, is_up);
+		op = OP_INIT(is_up ? OP_ROT : OP_RROT, APPLY_ON_A);
 		ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
 	}
 }
@@ -214,6 +218,8 @@ void	ps_split_ranges(t_ps a, t_ps b, t_lst *ops)
 		{
 			ps_takefrom_best(a, b, ops);
 			dump_stacks(a, b);
+			if (a->len == 2)
+				break ;
 			/* getchar(); */
 		}
 		turn++;
@@ -235,8 +241,10 @@ void	ps_sort_remainder(t_ps a, t_lst *ops)
 	tail = GET_PS_NODE(ft_dlst_gettail(a->head));
 	if (head->val > tail->val)
 	{
-		op_doswp(a);
-		op = OP_INIT(OP_SWAP, APPLY_ON_A);
+		/* here I shall either use swap or rotation */
+		/* maybe bruteforce on less than 6 elements */
+		op_dorot(a, true);
+		op = OP_INIT(OP_ROT, APPLY_ON_A);
 		ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
 	}
 }
@@ -296,13 +304,15 @@ int		ps_find_largest_node(t_ps ps)
 		if (GET_PS_NODE(walk)->turn == turn && GET_PS_NODE(walk)->range == range
 				&& GET_PS_NODE(walk)->val >= max)
 		{
-			max = GET_PS_NODE(walk)->val;
+			node = GET_PS_NODE(walk);
+			max = node->val;
 			index = i;
 		}
 		i++;
 		walk = walk->next;
 	}
-	ft_dprintf(2, "index of the largest node is: %{yellow_fg}%d%{reset}\n", index);
+	ft_dprintf(2, "index of the largest node (%{cyan_fg}%d%{reset}) "
+			   "is: %{yellow_fg}%d%{reset}\n", index, node->val);
 	/* getchar(); */
 	return (index);
 }

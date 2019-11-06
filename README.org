@@ -33,4 +33,6 @@ it seems like nothing is working! the trick of splitting works fine with smaller
 <2019-11-06 Wed 01:10> it is working! but, I got much more instructions than expected:
 
 + for 100_random_input I got 650 instructions, which is quite acceptable
-+ for 500_random_input I got a fucking
++ for 500_random_input I got a fucking unacceptably 11007 instructions
+
+/Possible Solution?/ Well, I shall not use onion splitting, since it requires always two operations to push a value that's a /RANGE_LOW/ to the bottom of stack B (ie. =pb rb=). A good idea is to only split into two parts so that each /turn/, we push the current /RANGE_LOW/. In this approach, we will only use one instruction, =pb= to push lower values, and we will guarantee that: $\forall e_1 \in turn_n, \forall e_2 \in turn_{n-1}; e_1 > e_2$.
