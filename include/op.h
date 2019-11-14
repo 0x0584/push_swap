@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:16:37 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/02 11:57:39 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/14 14:11:03 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,8 @@ void	op_dump(t_op op);
 bool	op_dopsh(t_ps dest, t_ps src);
 bool	op_doswp(t_ps stack);
 bool	op_dorot(t_ps stack, bool is_up);
+
+void	helper_op_dump(t_lst e);
+void	helper_op_free(void *content, size_t size);
 
 #endif /* OP_H */

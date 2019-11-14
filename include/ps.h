@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:10:29 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/06 12:54:11 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/14 16:37:02 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,23 @@
 
 # include "dlst.h"
 
+# define DEBUG_SPLIT					1
+# define DEBUG_REFILL					1
+
 # define ONE_THIRD(foo)					((foo) / 3)
 # define GET_PS_NODE(dlst)				((t_ps_node *)dlst->blob)
 
+# define RANGE_LOW_SPLIT_SIZE			5
+# define RANGE_HIGH_SPLIT_SIZE			11
+
 typedef int		t_val;
+
 typedef enum	e_ranges
 {
-	RANGE_LOW,
-	RANGE_HIGH,
-	RANGE_NA
+	RANGE_NA,
+
+	RANGE_LOW = RANGE_LOW_SPLIT_SIZE,
+	RANGE_HIGH = RANGE_HIGH_SPLIT_SIZE
 }				t_range;
 
 typedef struct	s_ps_node
@@ -33,7 +41,6 @@ typedef struct	s_ps_node
 	   reverse, we can set the node to it's initial place
 	*/
 	int		turn;
-	t_range	range;
 	t_val	ord;
 	t_val	val;
 }				t_ps_node;
@@ -74,6 +81,12 @@ void		ps_sort_remainder(t_ps a, t_lst *ops);
 
 void		helper_node_dump(t_dlst e);
 void		dump_stacks(t_ps a, t_ps b);
-bool		helper_end_split(t_ps a);
+
+void		ps_split_ranges(t_ps a, t_ps b, t_lst *ops);
+void		ps_refill(t_ps a, t_ps b, t_lst *ops);
+
+t_range		ps_find_ranges(t_ps a);
+
+bool		split_end(t_ps a, int prev_turn);
 
 #endif
