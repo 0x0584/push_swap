@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/09 19:47:03 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/11 20:14:34 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ t_ps_node	*ps_find_mids(t_ps a)
 		walk = walk->next;
 	}
 	mid = GET_PS_NODE(walk);
-	ft_dprintf(2, "mid is %d\n", mid->val);
+	ft_dprintf(2, "%{yellow_fg}mid is %d%{reset}\n", mid->val);
 	ps_del(&sorted_a);
 	return mid;
 }
@@ -196,7 +196,7 @@ void	ps_split_ranges(t_ps a, t_ps b, t_lst *ops)
 	{
 		ft_dprintf(2, "splitting on turn {%d}\n", turn);
 		ps_setranges(a, turn);
-		ft_dprintf(2, "this is the current mid %d", a->mid->val);
+		/* ft_dprintf(2, "this is the current mid %d", a->mid->val); */
 		/* getchar(); */
 		while (helper_end_split(a))
 		{
@@ -261,7 +261,7 @@ t_range		ps_current_range(t_ps b, int turn)
 			return RANGE_LOW;
 		walk = walk->next;
 	}
-	return RANGE_HIGH;
+	return (RANGE_HIGH);
 }
 
 int		ps_find_largest_node(t_ps ps)
@@ -352,4 +352,13 @@ void	ps_refill(t_ps a, t_ps b, t_lst *ops)
 		ft_dprintf(2, "after pushing\n");
 		/* getchar(); */
 	}
+	/* ft_dprintf(2, "splitting again"); */
+	/* ps_split_ranges(b, a, ops); */
 }
+
+// IDEA: now, I need to to serveral things before everything works fine.
+//
+// first, is to split and refill recursively, ie. when splitting A into half
+// and push everything to stack B, I need to split again everything left on
+// stack B that was sent in the first turn. and apply the same process again,
+// but this time, push everything to stack A.
