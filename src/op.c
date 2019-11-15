@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:41:51 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/11 17:53:09 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/15 17:31:53 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ bool		op_isvalid(char const *str, t_op *op)
 	return (OP_IS_GOOD(op));
 }
 
-/* FIXME: use array instead of sending two pointers */
 bool		op_apply(t_op op, t_ps foo, t_ps bar)
 {
 	if (op.op == OP_PUSH)
@@ -88,7 +87,7 @@ bool		op_dopsh(t_ps dest, t_ps src)
 	if (!dest || !src || !src->len || dest->len == dest->size)
 		return (false);
 	ft_dprintf(2, ">> APPLYING OP: %{red_fg}p%c%{reset}\n", dest->symb);
-	ft_dlstadd(&dest->head, ft_dlstpeek(&src->head));
+	ft_lstadd(&dest->stack, ft_lstpeek(&src->stack));
 	src->len--;
 	dest->len++;
 	return (true);
@@ -96,55 +95,45 @@ bool		op_dopsh(t_ps dest, t_ps src)
 
 bool		op_doswp(t_ps ps)
 {
-	t_dlst foo;
-	t_dlst bar;
+	t_lst foo;
+	t_lst bar;
 
 	if (!ps || ps->len < 2)
 		return (false);
 	ft_dprintf(2, ">> APPLYING OP: %{red_fg}s%c%{reset}\n", ps->symb);
-	foo = ft_dlstpeek(&ps->head);
-	bar = ft_dlstpeek(&ps->head);
-	ft_dlstadd(&ps->head, foo);
-	ft_dlstadd(&ps->head, bar);
+	foo = ft_lstpeek(&ps->stack);
+	bar = ft_lstpeek(&ps->stack);
+	ft_lstadd(&ps->stack, foo);
+	ft_lstadd(&ps->stack, bar);
 	return (true);
 }
 
+/*
+   FIXME: tracking the tail of the stack is optimal for rotation!
+   so for the moment, i'll be using a singly linked list but when
+   finilizing the work, i'll switch to a doubly linked list.
+
+   also, rotation might recieve an argument indicating the number
+   of rotations, so that we can do it at once. this could be achieved
+   by creating a new list containing the elements that we can to rotate,
+   and put them on head or tail based on rotation.
+*/
+
 bool		op_dorot(t_ps ps, bool is_up)
 {
-	t_dlst node;
-	t_dlst walk;
-	t_dlst tmp;
+	t_lst node;
 
 	if (!ps || ps->len < 2)
 		return (false);
-	/* else if (ps->len == 2) */
-	/* 	return (op_doswp(ps)); */
 	ft_dprintf(2, ">> APPLYING OP: %{red_fg}r%s%c%{reset}\n",
 			   !is_up ? "r" : "", ps->symb);
 	if (is_up)
-		node = ft_dlstpeek(&ps->head);
+		node = ft_lstpeek(&ps->stack);
 	else
-		node = ft_dlstpop(&ps->head);
+		node = ft_lstpop(&ps->stack);
 	if (is_up)
-		ft_dlstpush(&ps->head, node);
+		ft_lstpush(&ps->stack, node);
 	else
-		ft_dlstadd(&ps->head, node);
-	/* walk = ps->head; */
-	/* while (walk) */
-	/* { */
-	/* 	helper_node_dump(walk); */
-	/* 	walk = walk->next; */
-	/* } */
-	/* ft_putendl("after head"); */
-	/* getchar(); */
-	/* walk = ps->tail; */
-	/* while (walk) */
-	/* { */
-	/* 	helper_node_dump(walk); */
-	/* 	walk = walk->prev; */
-	/* } */
-	/* ft_putendl("after tail"); */
-	/* getchar(); */
-	/* ft_dlstadd(is_up ? &ps->tail : &ps->head, node); */
+		ft_lstadd(&ps->stack, node);
 	return (true);
 }

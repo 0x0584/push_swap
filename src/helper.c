@@ -6,14 +6,14 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:16:42 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/14 17:25:39 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/15 18:13:01 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "op.h"
 #include "ft_printf.h"
 
-#define ROW_SIZE					5
+#define ROW_SIZE							10
 
 void	helper_op_dump(t_lst e)
 {
@@ -29,24 +29,24 @@ void	helper_op_free(void *content, size_t size)
 		free(content);
 }
 
-void	helper_node_dump(t_dlst e)
+void	helper_node_dump(t_lst e)
 {
 	t_ps_node *node;
 
-	if (!e || !(node = GET_PS_NODE(e)))
+	if (!e || !(node = GET_NODE(e)))
 		return ;
-	ft_dprintf(2, "%{green_fg}(%.3d)%{yellow_fg}%+.3d%{blue_fg}[%.3d]%{reset} ",
-				node->turn, node->val, node->ord);
+	ft_dprintf(2, "%{green_fg}%+.3d%{blue_fg}(%.3d)%{reset} ",
+				node->value, node->count);
 }
 
 void	helper_fdump(t_ps ps)
 {
 	int i;
-	t_dlst walk;
+	t_lst walk;
 
 	i = 0;
 
-	walk = ps->head;
+	walk = ps->stack;
 	while (walk)
 	{
 		helper_node_dump(walk);
@@ -63,4 +63,22 @@ void	dump_stacks(t_ps a, t_ps b)
 	ft_dprintf(2, "\n]\n %c:[\n", b->symb);
 	helper_fdump(b);
 	ft_dprintf(2, "\n]\n////\n");
+}
+
+
+void	do_ops(t_ps a, t_ps b)
+{
+	char *s_op;
+	t_op op;
+
+	s_op = NULL;
+	while (gnl(0, &s_op))
+	{
+		if (!op_isvalid(s_op, &op))
+			break;
+		op_apply(op, a, b);
+		dump_stacks(a, b);
+		free(s_op);
+	}
+
 }

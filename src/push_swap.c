@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/14 17:32:36 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/16 00:54:56 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,67 +14,79 @@
 #include "reader.h"
 #include "ft_printf.h"
 
-void	ps_setorder(t_ps a)
+void	op_save(t_op op, t_lst *ops, t_ps a, t_ps b)
 {
-	t_ps sorted_a;
-	t_dlst walk, s_walk;
-	int index;
-	int range;
-
-	index = 0;
-	sorted_a = ps_mergesort(a);
-	ft_dprintf(2, "%{blue_fg}Initial state%{reset}\n");
-	s_walk = sorted_a->head;
-	range = ps_find_ranges(a);
-	while (s_walk)
-	{
-		walk = a->head;
-		while (walk && GET_PS_NODE(walk)->val != GET_PS_NODE(s_walk)->val)
-			walk = walk->next;
-		GET_PS_NODE(walk)->ord = index++;
-		if (range && index % range == 0)
-			range--;
-		GET_PS_NODE(walk)->turn = range;
-		s_walk = s_walk->next;
-	}
-	dump_stacks(a, sorted_a);
-	ps_del(&sorted_a);
+	if (!op_apply(op, a, b))
+		ft_dprintf(2, "%{yellow_fg}note: cannot apply operation!\n%{reset}");
+	ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
 }
 
-void	do_ops_intract(t_ps a, t_ps b)
+
+int		find_fit(t_ps_node *node, t_ps b)
 {
-	char *s_op = NULL;
-	t_op op;
+	t_lst walk;
 
-	while (gnl(0, &s_op))
+	walk = b->stack;
+	while (walk)
 	{
-		if (!op_isvalid(s_op, &op))
-			break;
-		op_apply(op, a, b);
-		dump_stacks(a, b);
-		free(s_op);
-	}
+		if (node == walk->content)
+		{
 
+		}
+		walk = walk->next;
+	}
+	return (0);
+}
+
+t_lst	find_ops(t_ps_node *node, int index, t_ps b)
+{
+	t_lst	ops;
+	int		n_rots;
+
+	ops = NULL;
+	n_rots = find_fit(node, b);
+
+
+
+
+	return (ops);
 }
 
 void	push_swap(t_ps a, t_ps b)
 {
 	t_lst ops;
+	t_lst walk;
+	t_lst tmp_ops;
+	t_lst optimal_ops;
+	int index;
 
 	if (ps_issorted(a, b))
 		return ;
 
 	ops = NULL;
-	ps_setorder(a);
-	/* do_ops_intract(a, b); */
-	ps_split_ranges(a, b, &ops);
-	ft_putstr("end of split");
-	getchar();
-	/* ps_refill(a, b, &ops); */
+	index = 0;
+	optimal_ops = NULL;
+	op_save(OP_INIT(OP_PUSH, APPLY_ON_B), &ops, a, b);
+	while (a->len)
+	{
+		walk = a->stack;
+		while (walk)
+		{
+			tmp_ops = find_ops(walk->content, index++, b);
+			if (ft_lstlen(tmp_ops) < ft_lstlen(optimal_ops))
+			{
+				ft_lstdel(&optimal_ops, lstdel_helper);
+				optimal_ops = tmp_ops;
+			}
+			walk = walk->next;
+		}
+	}
+	while (b->len)
+		op_save(OP_INIT(OP_PUSH, APPLY_ON_A), &ops, a, b);
 	ft_lstiter(ops, helper_op_dump);
 	ft_lstdel(&ops, helper_op_free);
 
-	ft_printf("%s", ps_issorted(a, b) ? "OK" : "KO");
+	ft_printf("FINAL RESULT: %s", ps_issorted(a, b) ? "OK" : "KO");
 }
 
 int		main(int argc, char **argv)
@@ -84,10 +96,8 @@ int		main(int argc, char **argv)
 
 	if (!(ps_a = read_args(argc, argv)))
 		return (EXIT_FAILURE);
-
-	push_swap(ps_a, ps_b = ps_alloc('B', ps_a->size));
+	push_swap(ps_a, ps_b = ps_alloc('b', ps_a->size));
 	ps_del(&ps_a);
 	ps_del(&ps_b);
-
 	return (0);
 }
