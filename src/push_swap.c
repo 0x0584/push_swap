@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/17 00:16:46 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/18 03:11:20 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,136 +27,58 @@ void	op_save(t_op op, t_lst *ops, t_ps a, t_ps b)
 
 /* FIXME: add arrlst to t_ps */
 
+/*
+   return the number of rotations
+
+   given three integers low = 0, mid = 4, high = 8 and an array A_{0},
+   sorted, in asending order. we can hold this if we use pb `size' times.
+   and use check on stack A instead.
+
+   A_{0}  = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+	 - A_{0}[low] = 0, A_{0}[mid] = 5, A_{0}[high] = 9
+
+   given i \in Z, where A_{i}:
+
+     - if i == 0, then it means that array A has not rotated.
+	   ie, sorted-mid is at it's place.
+	 - if i > 0, means that the mid is shifted to right.
+	 - i < 0 means that it has been rotated at left.
+
+   in case of A_{-3} = [4, 5, 6, 7, 8, 9, 1, 2, 3]
+	 - A_{-3}[low] = 4, A_{-3}[mid] = 8, A_{-3}[high] = 3
+
+   given a search key of (6), then we have the following
+
+		- A_{-3}[low] > A{-3}[high]  ??
+		- A_{-3}[mid] > A{-3}[value]
+
+   NOTE: the question is, given all possible combinations of low, mid, high
+
+		- A_{-3}[low] < A{-3}[high] && A_{-3}[mid] > A{-3}[high]
+		- A_{-3}[low] < A{-3}[high] && A_{-3}[mid] > A{-3}[high]
+
+
+   A_{+3} = [7, 8, 9, 1, 2, 3, 4, 5, 6]
+	 - A_{+3}[low] = 7, A_{+3}[mid] = 2, A_{+3}[high] = 6
+
+   A_{+4} = [6, 7, 8, 9, 1, 2, 3, 4, 5]
+	 - A_{+4}[low] = 6, A_{+4}[mid] = 1, A_{+4}[high] = 5
+
+   test cases:
+   ~~~~~~~~~~~~~
+
+    TODO: test on different rotations and search keys.
+
+*/
+
 int		find_fit(t_lst node, t_lst *arrlst, size_t low, size_t high)
 {
 	size_t mid;
 	size_t i;
 
 	i = 0;
-	mid = (low + high) / 2;		/* this is the relative mid,
-								   not the mid of the array */
-	if (NODE_ORDER(arrlst[mid], ==, node))
-		return mid;
-	/* rot to right */
-	else if (NODE_ORDER(arrlst[low], >, arrlst[high]))
-	{
-		/*
-
-		  NOTE: A is sorted in accesnding order, looking for 6
-
-		   A is not rotated, B is rotated by 4 steps. Both have distinct
-		   integers (possibly negative too). thus, mid is preserved with
-		   index, otherwise, we shall think of duplicates as one chunk.
-		   by changing the high and low correspodenly.
-
-		   - mid of A is 8, where A[8] = 8.
-		   - mid of B is 3, where B[8] = 3 but the relative mid of A is
-		     at index [13]
-
-		   now, notes about the rotation and the mid since the rotation,
-		   i guess we can know which side to go to based on the last one.
-
-		   we look for e, where e == 6,
-
-		   A: 0  1  2  3  4  5 6 7 8 9 10 11 12 13 14 15 16 17
-
-
-		   // reverse rotation (rr) right/down
-		   B: 13 14 15 16 17 0 1 2 3 4 5  6  7  8  9  10 11 12
-		                           ^            ^
-
-								  mid      relative mid
-
-		   ------------------------v-----------------------
-		   // normal rotation (r)
-		   C: 5  6  7  8  9 10 11 12 13 14 15 16 17 0 1 2 3 4
-		   left/up
-		               ^
-				  relative mid
-
-		   // Part II
-
-		   steps of the process
-		   ~~~~~~~~~~~~~~~~~~~~~~~
-
-		   #0 - calling binary_search_rot, we find out that low is bigger than high, thus it was a
-		   right side rotation. the sorted part is the one on the left, while right side is not.
-		   this is caused by the shift of mid to right side.
-		   we shall see which side of the two the search key is in. if found on the left.
-		   we shall check in which side it falls.
-		   if it's between B[low] and B[mid], then do a plain binary search since we already know
-		   that the left region is sorted (B[low] and B[mid]).
-
-		   A[i]  \  i   | shift | low | mid | high|
-		   -------------+-------+-----+-----+-----+
-		     B          | right | 13  | 3   |  12 |
-			 C          | left  | 5   | 12  |  4  |
-
-		   #1 - calling
-
-		   A[i]  \  i   | low | mid | high|
-		   -------------+-----+-----+-----+
-		     B
-			 C
-
-		   // Part I
-
-		   this is a right side rotation, meaning that the left range is
-		   unsorted. we shall focus on the right range. so that right,
-		   right seems in place. (i guess that left rotation is the same case)
-
-		   now to actually find the mid, we shall find which side is the
-		   one sorted.
-
-		   now the mid of b will lead to which side to take, so after we shall
-		   find the range of operation. first, see if low < mid, if so then pick
-		   and we know that the order is ascending, thus: the missed part is
-		   the on the right, we shall take the left side.
-
-		   binary_search_rot:
-
-		   given:
-
-				a search key element, e.
-				three indices low, mid and high.
-
-		   if (MAX(e, B[low]) == B[low]) && (MIN(e, B[mid]) == B[mid])
-				high = mid
-				call binary_search(b, low, mid)
-		   else
-		       low = mid + 1
-			   recall binary_search_rot(b, mid, high)
-
-		   the example abive is in case of a rotation
-		   while on the right it will change the side of working
-
-		   if (MAX(e, B[mid]) == e && MIN(e, B[high]) == e)
-
-
-		   -------------
-		   #1
-
-		   e == 6
-		   B[low] == 13 and B[high] == 12, thus array is rotated to the right
-		   B[]
-
-
-
-
-
-
-
-		*/
-
-		if ()
-		low = mid;
-
-	}
-	else
-	{
-		/* rot to left  */
-
-	}
+	mid = (low + high) / 2;		/* this is the relative mid */
+	/* while */
 	return (0);
 }
 
@@ -190,9 +112,21 @@ void	push_swap(t_ps a, t_ps b)
 	index = 0;
 	optimal_ops = NULL;
 	op_save(OP_INIT(OP_PUSH, APPLY_ON_B), &ops, a, b);
-	while (a->len)
+
+	/* push everything to b and leave only elements. only check if they're
+	 * in desending order. if they are, correct order. prioritize ranges,
+	 *
+	 * suppose given an array, A_{0} = [5, 100, 2], it is sorted and rotated.
+	 * A_{+1} = [2, 5, 100]. How ever giving B
+	 *
+	 *
+	 *
+	 */
+	while (a->len - 3)
+		op_save(OP_INIT(OP_PUSH, APPLY_ON_B), &ops, a, b);
+	while (b->len)
 	{
-		walk = a->stack;
+		walk = b->stack;
 		while (walk)
 		{
 			tmp_ops = find_ops(walk, index++, b);
@@ -204,8 +138,6 @@ void	push_swap(t_ps a, t_ps b)
 			walk = walk->next;
 		}
 	}
-	while (b->len)
-		op_save(OP_INIT(OP_PUSH, APPLY_ON_A), &ops, a, b);
 	ft_lstiter(ops, helper_op_dump);
 	ft_lstdel(&ops, helper_op_free);
 
@@ -217,10 +149,13 @@ int		main(int argc, char **argv)
 	t_ps ps_a;
 	t_ps ps_b;
 
-	if (!(ps_a = read_args(argc, argv)))
-		return (EXIT_FAILURE);
-	push_swap(ps_a, ps_b = ps_alloc('b', ps_a->size));
-	ps_del(&ps_a);
-	ps_del(&ps_b);
+	/* if (!(ps_a = read_args(argc, argv))) */
+	/* 	return (EXIT_FAILURE); */
+	/* /\* push_swap(ps_a, ps_b = ps_alloc('b', ps_a->size)); *\/ */
+	/* ps_del(&ps_a); */
+	/* ps_del(&ps_b); */
+
+	/* int arr[] = {4,5,6,7,8,9,0,1,2,3}; */
+	/* test(); */
 	return (0);
 }

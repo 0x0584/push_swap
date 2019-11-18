@@ -6,37 +6,44 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 21:36:42 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/15 17:51:58 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/17 16:33:58 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "reader.h"
 
+/* FIXME: check duplicates */
+
 t_ps	read_args(int ac, char**av)
 {
 	t_ps_node	node;
-	t_ps		stack;
+	t_ps		ps;
 	long		val;
 	int			i;
 
 	if (ac < 2 || !SAFE_PTRVAL(av))
 		return (NULL);
-	i = 0;
-	stack = ps_alloc('a', (size_t)--ac);
-	stack->len = ac;
+	i = 1;
+	ps = ps_alloc('a', (size_t)(ac - 1));
+	ps->len = ac;
 	while (i < ac)
 	{
-		val = ft_atoll(av[i + 1]);
-		if (val > (long)INT_MAX || val < (long)INT_MIN)
+		val = helper_get_val(av[i]);
+		node = (t_ps_node){(int)val, 0};
+		if (!VALID_INT(val) || !ps_check_node(ps, &node))
 		{
-			ps_del(&stack);
-			ft_putendl_fd("Fatal! in read_args: value is not a proper int", 2);
+			ps_del(&ps);
+#if DEBUG_READ
+			ft_dprintf(2, "%{RED_fg}Fatal!%{reset} in read_args: "
+					   "%{yellow_fg}value (%s) is not a proper int%{reset}",
+					   av[i]);
+#endif
 			break ;
 		}
-		node = (t_ps_node){(int)val, 0};
-		ft_lstpush(&stack->stack, ft_lstnew(&node, sizeof(t_ps_node)));
+		ft_lstpush(&ps->stack, ft_lstnew(&node, sizeof(t_ps_node)));
+		i++;
 	}
-	return (stack);
+	return (ps);
 }
 
 void	striter_tolower(char *s)
