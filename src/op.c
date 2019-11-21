@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:41:51 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/15 17:31:53 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/19 16:02:23 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,19 @@ bool		op_apply(t_op op, t_ps foo, t_ps bar)
 	return (false);
 }
 
+# define AS_NODE(foo) ((t_ps_node *)foo)
+
 bool		op_dopsh(t_ps dest, t_ps src)
 {
 	if (!dest || !src || !src->len || dest->len == dest->size)
 		return (false);
 	ft_dprintf(2, ">> APPLYING OP: %{red_fg}p%c%{reset}\n", dest->symb);
 	ft_lstadd(&dest->stack, ft_lstpeek(&src->stack));
+
+	if (AS_NODE(dest->stack->content)->value < dest->min.value)
+		dest->min.value = AS_NODE(dest->stack->content)->value;
+	if (AS_NODE(dest->stack->content)->value > dest->max.value)
+		dest->max.value = AS_NODE(dest->stack->content)->value;
 	src->len--;
 	dest->len++;
 	return (true);

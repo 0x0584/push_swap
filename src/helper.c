@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:16:42 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/17 16:12:58 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/19 17:27:04 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ long	helper_get_val(char *str)
 {
 	size_t i;
 
+	/*  do not allow numbers and strings `123foobar' */
+
 	if (!SAFE_PTRVAL(str))
 		return (LONG_MIN);
 	i = (ft_strchr("+-", *str) ? 1 : 0);
@@ -95,5 +97,5 @@ long	helper_get_val(char *str)
 		if (!ft_isdigit(str[i++]))
 			return (LONG_MIN);
 	}
-	return (ft_atoll(str));
+	return (ft_atol(str));
 }

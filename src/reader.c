@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 21:36:42 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/17 16:33:58 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/19 17:34:00 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_ps	read_args(int ac, char**av)
 	ps->len = ac;
 	while (i < ac)
 	{
-		val = helper_get_val(av[i]);
+		val = ft_atol(av[i++]);
 		node = (t_ps_node){(int)val, 0};
 		if (!VALID_INT(val) || !ps_check_node(ps, &node))
 		{
@@ -41,7 +41,10 @@ t_ps	read_args(int ac, char**av)
 			break ;
 		}
 		ft_lstpush(&ps->stack, ft_lstnew(&node, sizeof(t_ps_node)));
-		i++;
+		if (ps->max.value < val)
+			ps->max.value = val;
+		if (ps->min.value > val)
+			ps->min.value = val;
 	}
 	return (ps);
 }

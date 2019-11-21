@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:10:29 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/17 15:40:36 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/19 15:56:23 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@ typedef struct	s_ps_ds
 	t_lst	stack;
 	size_t	len;
 	size_t	size;
+
+	t_ps_node max;
+	t_ps_node min;
 }				*t_ps;
 
 t_ps		ps_alloc(char symb, size_t size);

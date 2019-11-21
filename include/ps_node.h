@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 15:32:41 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/17 16:32:26 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/19 17:28:36 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 
 # define GET_NODE(e)					((t_ps_node *)e->content)
 
-# define CHECK_MAX(val)					((long)val > (long)INT_MAX)
-# define CHECK_MIN(val)					((long)val < (long)INT_MIN)
+# define CHECK_MAX(val)					((long)val <= (long)INT_MAX)
+# define CHECK_MIN(val)					((long)val >= (long)INT_MIN)
 # define VALID_INT(val)					(CHECK_MAX(val) || CHECK_MIN(val))
 
 typedef enum	e_comparison_operator
