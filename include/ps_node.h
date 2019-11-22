@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 15:32:41 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/19 17:28:36 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/22 20:51:52 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,9 @@ typedef enum	e_comparison_operator
 typedef struct	s_ps_node
 {
 	int		value;
-	int		count;
+
+	int		a_cost;
+	int		b_cost;
 }				t_ps_node;
 
 void			ps_node_dump(t_lst e);

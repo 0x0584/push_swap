@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 21:36:42 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/19 17:34:00 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/22 21:13:48 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_ps	read_args(int ac, char**av)
 	while (i < ac)
 	{
 		val = ft_atol(av[i++]);
-		node = (t_ps_node){(int)val, 0};
+		node = (t_ps_node){(int)val, 0, 0};
 		if (!VALID_INT(val) || !ps_check_node(ps, &node))
 		{
 			ps_del(&ps);

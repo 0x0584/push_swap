@@ -6,14 +6,14 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 20:42:23 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/16 22:29:00 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/22 20:21:48 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ps.h"
 #include "op.h"
 #include "reader.h"
-#include "ft_printf.h"
+
 
 #define STACK_SIZE 6
 #define OP_NEW(op, which)		(t_op){which, op}

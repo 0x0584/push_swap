@@ -6,14 +6,13 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/19 17:24:29 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/22 21:14:09 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ps.h"
 #include "ps_node.h"
 #include "op.h"
-#include "ft_printf.h"
 
 t_ps	ps_alloc(char symb, size_t size)
 {
@@ -23,8 +22,8 @@ t_ps	ps_alloc(char symb, size_t size)
 		return (NULL);
 	ps->symb = symb;
 	ps->size = size;
-	ps->max = (t_ps_node){INT_MIN, 0};
-	ps->min = (t_ps_node){INT_MAX, 0};
+	ps->max = (t_ps_node){INT_MIN, 0, 0};
+	ps->min = (t_ps_node){INT_MAX, 0, 0};
 	return (ps);
 }
 

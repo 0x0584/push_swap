@@ -6,86 +6,28 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/21 00:16:15 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/23 00:20:53 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+
 #include "op.h"
 #include "reader.h"
-#include "ft_printf.h"
+#define AS_NODE(obj)							((t_ps_node *)obj)
+#define FEW_ELEMENTS							(3)
 
-void	op_save(t_op op, t_lst *ops, t_ps a, t_ps b)
+void	op_save(bool commit, t_op op, t_lst *ops, t_ps a, t_ps b)
 {
-	if (!op_apply(op, a, b))
+	if (commit && !op_apply(op, a, b))
+	{
 		ft_dprintf(2, "%{yellow_fg}note: cannot apply operation!\n%{reset}");
+		op_dump(op);
+	}
 	ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
 }
 
-# define AS_NODE(obj)					((t_ps_node *)obj)
-# define NODE_VALUE(obj)				(AS_NODE(obj->content)->value)
-# define NODE_ORDER(u, ord, v)			(NODE_VALUE(u) ord NODE_VALUE(v))
-
-
-/* FIXME: add arrlst to t_ps */
-
-/*
-   return the number of rotations
-
-   given three integers low = 0, mid = 4, high = 8 and an array A_{0},
-   sorted, in asending order. we can hold this if we use pb `size' times.
-   and use check on stack A instead.
-
-   A_{0}  = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-	 - A_{0}[low] = 0, A_{0}[mid] = 5, A_{0}[high] = 9
-
-   given i \in Z, where A_{i}:
-
-     - if i == 0, then it means that array A has not rotated.
-	   ie, sorted-mid is at it's place.
-	 - if i > 0, means that the mid is shifted to right.
-	 - i < 0 means that it has been rotated at left.
-
-   in case of A_{-3} = [4, 5, 6, 7, 8, 9, 1, 2, 3]
-	 - A_{-3}[low] = 4, A_{-3}[mid] = 8, A_{-3}[high] = 3
-
-   given a search key of (6), then we have the following
-
-		- A_{-3}[low] > A{-3}[high]  ??
-		- A_{-3}[mid] > A{-3}[value]
-
-   NOTE: the question is, given all possible combinations of low, mid, high
-
-		- A_{-3}[low] < A{-3}[high] && A_{-3}[mid] > A{-3}[high]
-		- A_{-3}[low] < A{-3}[high] && A_{-3}[mid] > A{-3}[high]
-
-
-   A_{+3} = [7, 8, 9, 1, 2, 3, 4, 5, 6]
-	 - A_{+3}[low] = 7, A_{+3}[mid] = 2, A_{+3}[high] = 6
-
-   A_{+4} = [6, 7, 8, 9, 1, 2, 3, 4, 5]
-	 - A_{+4}[low] = 6, A_{+4}[mid] = 1, A_{+4}[high] = 5
-
-   test cases:
-   ~~~~~~~~~~~~~
-
-    TODO: test on different rotations and search keys.
-
-*/
-
-int		find_fit(t_lst node, t_lst *arrlst, size_t low, size_t high)
-{
-	size_t mid;
-	size_t i;
-
-	i = 0;
-	mid = (low + high) / 2;		/* this is the relative mid */
-
-	/* while */
-	return (0);
-
-}
-
-#define FEW_ELEMENTS								(3)
+void	find_split(t_ps ps, size_t *min_index, size_t *max_index);
+bool	node_order(t_ps_node *left, t_ps_node *middle, t_ps_node *right);
+void	lstdel_helper(void *content, size_t content_size);
 
 void	ps_sort_few(t_ps a, t_ps b, t_lst *ops)
 {
@@ -95,48 +37,19 @@ void	ps_sort_few(t_ps a, t_ps b, t_lst *ops)
 	if (a->size == 2)
 	{
 		if (GET_NODE(a->stack)->value > GET_NODE(a->stack->next)->value)
-			op_save(OP_INIT(OP_SWAP, APPLY_ON_A), ops, a, b);
+			op_save(true, OP_INIT(OP_SWAP, APPLY_ON_A), ops, a, b);
 	}
 	else if (a->size == FEW_ELEMENTS)
 	{
 		/* compare the three elements */
 	}
-
 }
-
 
-# define AS_INT(ptr)				*(int *)ptr
-
-size_t binary_search(void *key, void **arr, size_t low, size_t high)
-{
-	size_t mid;
-
-	mid = (low + high) / 2;
-	while (low < high)
-	{
-		ft_printf("KEY(%d)\n[%d] = %d (low)\n[%d] = %d (mid)\n"
-				  "[%d] = %d (high)\n",
-				  AS_NODE(key)->value,
-				  low, AS_NODE(arr[low])->value,
-				  mid, AS_NODE(arr[mid])->value,
-				  high, AS_NODE(arr[high])->value);
-		/* getchar(); */
-		if (AS_NODE(key)->value == AS_NODE(arr[mid])->value)
-			return (mid);
-		else if (AS_NODE(key)->value < AS_NODE(arr[mid])->value)
-			high = mid;
-		else
-			low = mid;
-		mid = (low + high) / 2;
-	}
-	return (mid);
-}
-
-void	find_split(t_ps ps, size_t *min_index, size_t *max_index);
-bool	node_order(t_ps_node *left, t_ps_node *middle, t_ps_node *right);
-void	lstdel_helper(void *content, size_t content_size);
-
-t_lst	compress_ops(t_lst ops)
+/* FIXME: optimize when possible
+ *
+ * when length of stack is two, either use r or rr depending on the optimal
+ */
+t_lst	compress_ops(t_ps a, t_ps b, t_lst ops)
 {
 	t_lst	walk;
 	t_lst	tmp;
@@ -163,68 +76,87 @@ t_lst	compress_ops(t_lst ops)
 	return (ops);
 }
 
-t_lst	find_ops(t_ps a, t_ps b, int b_rots, t_lst node)
+int		*ps_vals_asarray(t_ps ps, size_t *size)
+{
+	int		*arr;
+	size_t	i;
+	t_lst	walk;
+
+	if (!ps || !(arr = ALLOC(int *, ft_lstlen(ps->stack) + 1, sizeof(int))))
+		return (NULL);
+	walk = ps->stack;
+	i = 0;
+	while (walk)
+	{
+		arr[i++] = AS_NODE(walk->content)->value;
+		walk = walk->next;
+	}
+	if (size)
+		*size = i;
+	return (arr);
+}
+
+int		find_fit(t_ps a, t_ps_node *node)
 {
 	t_lst	ops;
-	void	**arr;
+	int		*arr;
 	size_t	size;
-
-	size_t low;
-	size_t high;
-	int		a_rots;
-
-	bool is_up;
-	bool flag;
+	int		n_rots;
 
 	ops = NULL;
-	arr = ft_lst_content_asarray(a->stack, &size);
-	a_rots = 0;
+	arr = ps_vals_asarray(a, &size);
+	n_rots = binary_search_range(node->value,
+								 arr, 0, size - 1, ascending_order);
+	free(arr);
+	/* while (true) */
+	/* { */
+	/* 	if (b_rots--) */
+	/* 	{ */
 
-	find_split(a, &low, &high);
-	flag = false;
-	if (low == 0 && high == (size - 1)) /* sorted */
+	/* 	} */
+	/* 	op_save(OP_INIT(OP_ROT, APPLY_ON_A), &ops, a, b); */
+	/* } */
+	/* op_save(OP_INIT(OP_PUSH, APPLY_ON_A), &ops, a, b); */
+	return n_rots;
+}
+
+t_lst	gen_ops(t_ps_node *node)
+{
+	t_lst	ops;
+	int		i;
+	int		j;
+
+	j = 0;
+	i = 0;
+	ops = NULL;
+
+	ft_printf("generating ops for %{red_fg}(%d)%{reset}\n"
+			  " >> rots on stack A [%d] rots on stack B [%d]",
+			  node->value, node->a_cost, node->b_cost);
+	getchar();
+
+
+	while (i < (int)ABS(node->a_cost) || j < (int)ABS(node->b_cost))
 	{
 
-		while (a_rots++ <= (int)(a->len / 2))
-		{
-			if (a_rots == 0 &&
-				(ps_node_cmp(node->content, arr[low], CMP_LT)
-					|| ps_node_cmp(node->content, arr[high], CMP_GT)))
-				break ;
-			else if (ps_node_cmp(node->content, arr[low + a_rots], CMP_GT)
-					 && ps_node_cmp(node->content,
-									arr[low + a_rots + 1], CMP_LT))
-			{
-				is_up = true;
-				break ;
-			}
-			else if (ps_node_cmp(node->content, arr[high], CMP_LT)
-					 && ps_node_cmp(node->content, arr[high - 1], CMP_GT))
-			{
-				is_up = false;
-				break ;
-			}
-			a_rots++;
-		}
+		if (i++ < (int)ABS(node->a_cost))
+			op_save(false, OP_INIT(node->a_cost > 0 ? OP_ROT : OP_RROT,
+								   APPLY_ON_A), &ops, NULL, NULL);
+		if (j++ < (int)ABS(node->b_cost))
+			op_save(false, OP_INIT(node->b_cost > 0 ? OP_ROT : OP_RROT,
+								   APPLY_ON_B), &ops, NULL, NULL);
+		ft_printf("ops..\n");
+		getchar();
 	}
-	else
-	{
-		/* not sorted */
-	}
+	op_save(false, OP_INIT(OP_PUSH, APPLY_ON_A), &ops, NULL, NULL);
 
-	bool on_top;
+	ft_printf("dumped ops: \n\n");
+	ft_lstiter(ops, helper_op_dump);
+	getchar();
 
-	/* n_rots = find_fit(node, arr, 0, b->len - 1); */
-	while (true)
-	{
-		if (b_rots--)
-		{
-
-		}
-		op_save(OP_INIT(OP_ROT, APPLY_ON_A), &ops, a, b);
-	}
-	op_save(OP_INIT(OP_PUSH, APPLY_ON_A), &ops, a, b);
-	return (compress_ops(ops));
+	/* or should all it sync_ops? */
+	/* return (compress_ops(ops)) */
+	return (ops);
 }
 
 
@@ -234,51 +166,86 @@ void	push_swap(t_ps a, t_ps b)
 	t_lst walk;
 	t_lst tmp_ops;
 	t_lst optimal_ops;
-	int n_rots;
+	int b_rots;
+	int a_rots;
 
 	if (ps_issorted(a, b))
 		return ;
 
 	ops = NULL;
-	n_rots = 0;
 	optimal_ops = NULL;
 
-	/* push everything to b and leave only elements. only check if they're
-	 * in desending order. if they are, correct order. prioritize ranges,
-	 *
-	 * suppose given an array, A_{0} = [5, 100, 2], it is sorted and rotated.
-	 * A_{+1} = [2, 5, 100]. How ever giving B
-	 */
-
 	/* either we have few */
+
 	if (a->size <= FEW_ELEMENTS)
-		ps_sort_few(a, b, &ops);
+		return ps_sort_few(a, b, &ops);
 
 	/* or push everything to b and leave few */
 	while (a->len - FEW_ELEMENTS)
-		op_save(OP_INIT(OP_PUSH, APPLY_ON_B), &ops, a, b);
+		op_save(true, OP_INIT(OP_PUSH, APPLY_ON_B), &ops, a, b);
 	ps_sort_few(a, b, &ops);
-
 
 	while (b->len)
 	{
 		walk = b->stack;
+		a_rots = 0;
+		b_rots = 0;
+		tmp_ops = NULL;
+
+		ft_printf(" ----- current ops -----\n\n");
+		ft_lstiter(ops, helper_op_dump);
+		getchar();
+		dump_stacks(a, b);
+		getchar();
+
 		while (walk)
 		{
-			size_t imin, imax;
+			/* size_t imin, imax; */
 
-			tmp_ops = find_ops(a, b, n_rots++, walk->content);
-			if (ft_lstlen(tmp_ops) < ft_lstlen(optimal_ops))
+			a_rots = find_fit(a, walk->content);
+			GET_NODE(walk)->a_cost = a_rots;
+
+			ft_printf("\n%d rots to get %d from B.\n",
+					  b_rots, GET_NODE(walk)->value);
+
+			ft_printf(" >> %d rots to place %d in A\n",
+					  a_rots, GET_NODE(walk)->value);
+
+			GET_NODE(walk)->b_cost = b_rots++;
+
+			tmp_ops = gen_ops(walk->content);
+
+			if (!optimal_ops)
+				optimal_ops = tmp_ops;
+			else if (ft_lstlen(tmp_ops) < ft_lstlen(optimal_ops))
 			{
 				ft_lstdel(&optimal_ops, lstdel_helper);
 				optimal_ops = tmp_ops;
 			}
+
+			if (ft_lstlen(optimal_ops) <= 2)
+				break;
+
+			getchar();
+
 			walk = walk->next;
 		}
 		/* do optimal ops */
+		ft_printf("%{green_fg}applying ops%{reset}\n");
+		walk = optimal_ops;
+		while (walk)
+		{
+			op_save(true, *(t_op *)walk->content, &ops, a, b);
+			walk = walk->next;
+		}
+		getchar();
+		ft_lstdel(&optimal_ops, lstdel_helper);
 	}
 	ft_lstiter(ops, helper_op_dump);
 	ft_lstdel(&ops, helper_op_free);
+
+	ft_printf(" << final stacks >>\n");
+	dump_stacks(a, b);
 
 	ft_printf("FINAL RESULT: %s", ps_issorted(a, b) ? "OK" : "KO");
 }
@@ -326,16 +293,24 @@ int		main(int argc, char **argv)
 
 	if (!(ps_a = read_args(argc, argv)))
 		return EXIT_FAILURE;
+	ps_b = ps_alloc('b', ps_a->size);
 
+	/* dump_stacks(ps_a, ps_b); */
 
-	find_split(ps_a, &imin, &imax);
+	/* op_dorot(ps_a, false); */
+	/* dump_stacks(ps_a, ps_b); */
+	/* getchar(); */
 
-	ft_printf("(min index: %d max index: %d)\n", imin, imax);
+	push_swap(ps_a, ps_b);
+
+	/* find_split(ps_a, &imin, &imax); */
+	/* ft_printf("(min index: %d max index: %d)\n", imin, imax); */
+
 	ps_del(&ps_a);
+	ps_del(&ps_b);
 
 	/* int arr[] = {4,5,6,7,8,9,0,1,2,3}; */
 	/* test(); */
-
 
 	return (EXIT_SUCCESS);
 

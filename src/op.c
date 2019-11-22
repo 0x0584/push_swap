@@ -6,12 +6,11 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:41:51 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/19 16:02:23 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/23 00:16:02 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "op.h"
-#include "ft_printf.h"
 
 void		op_dump(t_op op)
 {
@@ -86,8 +85,13 @@ bool		op_apply(t_op op, t_ps foo, t_ps bar)
 
 bool		op_dopsh(t_ps dest, t_ps src)
 {
-	if (!dest || !src || !src->len || dest->len == dest->size)
+	if (!dest || !src || !src->len || dest->len == dest->size + 1)
+	{
+
+		ft_printf("exit from false! dest: %d / %d | src: %d / %d\n",
+				  dest->len, dest->size, src->len, src->size);
 		return (false);
+	}
 	ft_dprintf(2, ">> APPLYING OP: %{red_fg}p%c%{reset}\n", dest->symb);
 	ft_lstadd(&dest->stack, ft_lstpeek(&src->stack));
 
@@ -134,13 +138,22 @@ bool		op_dorot(t_ps ps, bool is_up)
 		return (false);
 	ft_dprintf(2, ">> APPLYING OP: %{red_fg}r%s%c%{reset}\n",
 			   !is_up ? "r" : "", ps->symb);
+
+	/* ft_lstiter(ps->stack, helper_node_dump); */
+	/* getchar(); */
+
 	if (is_up)
 		node = ft_lstpeek(&ps->stack);
 	else
 		node = ft_lstpop(&ps->stack);
+
 	if (is_up)
 		ft_lstpush(&ps->stack, node);
 	else
 		ft_lstadd(&ps->stack, node);
+
+	/* ft_lstiter(ps->stack, helper_node_dump); */
+	/* getchar(); */
+
 	return (true);
 }

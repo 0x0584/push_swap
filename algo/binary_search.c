@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   binary_search.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/20 23:26:01 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/21 05:29:02 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/22 18:27:12 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
 /*
-   works on normal (and rotated) arrays
-   with no duplicates -- testing ascending order
+** the following binary_search function require a normal or rotated
+** sorted unique interger array
 */
 
 int ascending_order(int a, int b)
 {
-	return a - b;
+	return (a - b);
 }
 
 int descending_order(int a, int b)
 {
-	return b - a;
+	return (b - a);
 }
 
 int binary_search(int val, int *arr, size_t size, int cmp(int, int))
@@ -42,8 +42,6 @@ int binary_search(int val, int *arr, size_t size, int cmp(int, int))
 			low = mid + 1;
 		else
 			high = mid - 1;
-		/* ft_printf("mid: %d, low: %d, high: %d\n", */
-		/* 		  mid, low, high); */
 	}
 	return (-1);
 }
@@ -56,8 +54,6 @@ int binary_search_recu(int val, int *arr, size_t low, size_t high,
 	if (low > high)				/* !(low <= high) */
 		return (-1);
 	mid = (low + high) / 2;
-	/* ft_printf(" > mid: %d, low: %d, high: %d\n", */
-	/* 		  mid, low, high); */
 	if (cmp(arr[mid], val) == 0)
 		return (mid);
 	else if (cmp(val, arr[mid]) > 0)
@@ -118,7 +114,6 @@ int binary_search_find_min(int *arr, size_t low, size_t high,
 		return binary_search_find_min(arr, mid + 1, high, cmp);
 	else
 		return binary_search_find_min(arr, low, mid - 1, cmp);
-
 }
 
 int binary_search_range(int val, int *arr, size_t low, size_t high,
@@ -142,7 +137,6 @@ int binary_search_range(int val, int *arr, size_t low, size_t high,
 	{
 		if (cmp(val, arr[old_min]) < 0 || cmp(val, arr[old_max]) > 0)
 			return (0);
-
 		while (n_rots++ < (int)high / 2)
 		{
 			if (cmp(val, arr[n_rots]) < 0
@@ -155,6 +149,8 @@ int binary_search_range(int val, int *arr, size_t low, size_t high,
 	}
 	else
 	{
+		if (cmp(val, arr[0]) < 0 && cmp(val, arr[high]) > 0)
+				return 0;
 		while (n_rots++ < (int)high / 2)
 		{
 			if (n_rots == (int)old_min)
@@ -165,9 +161,9 @@ int binary_search_range(int val, int *arr, size_t low, size_t high,
 			}
 			if (cmp(val, arr[n_rots]) < 0
 					&& cmp(val, arr[n_rots - 1]) > 0)
-		 		return n_rots;
-			else if (cmp(val, arr[old_max - n_rots + 1]) < 0
-					 && cmp(val, arr[old_max - n_rots]) > 0)
+				return n_rots;
+			else if (cmp(val, arr[high - n_rots + 1]) < 0
+					 && cmp(val, arr[high - n_rots]) > 0)
 				return (n_rots * (-1));
 		}
 	}
@@ -214,14 +210,26 @@ int main(int argc, char **argv)
 
 	*/
 
+	char *str = NULL;
+	int val;
 
-	i = binary_search_range(10, arr, 0, size - 1, ascending_order);
+	while (gnl(0, &str))
+	{
+		val = ft_atoi(str);
+		i = binary_search_range(val, arr, 0, size - 1, ascending_order);
 
-	ft_printf("%{yellow_fg}n_rots: %d%{reset} -> ", i);
+		ft_printf("%{yellow_fg}n_rots: %d%{reset} -> ", i);
 
-	if (i > 0)
-		ft_printf("%{cyan_fg}[%d]%{reset}\n", arr[i]);
-	else
-		ft_printf("%{cyan_fg}[%d]%{reset}\n", arr[size - 1 + i]);
+		if (i == 0)
+			ft_printf("%{cyan_fg}[%d] %d [%d]%{reset}\n", arr[i],
+					  val, arr[size - 1]);
+		if (i > 0)
+			ft_printf("%{cyan_fg}[%d] %d [%d]%{reset}\n", arr[i - 1],
+					  val, arr[i]);
+		else
+			ft_printf("%{cyan_fg}[%d] %d [%d]%{reset}\n", arr[size - 1 + i],
+					  val, arr[size - 1 + i + 1]);
 
+		ft_strdel(&str);
+	}
 }
