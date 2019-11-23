@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/23 01:05:48 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/23 20:03:45 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #define FEW_ELEMENTS							(3)
 
 /* test passed: 0 9 4 11 8 7 55 44 33 22 101 402 -1 */
+
 void	op_save(bool commit, t_op op, t_lst *ops, t_ps a, t_ps b)
 {
 	if (commit && !op_apply(op, a, b))
@@ -26,15 +27,13 @@ void	op_save(bool commit, t_op op, t_lst *ops, t_ps a, t_ps b)
 	ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
 }
 
+/*  */
 void	find_split(t_ps ps, size_t *min_index, size_t *max_index);
 bool	node_order(t_ps_node *left, t_ps_node *middle, t_ps_node *right);
 void	lstdel_helper(void *content, size_t content_size);
 
 void	ps_sort_few(t_ps a, t_ps b, t_lst *ops)
 {
-	void	**arrlst;
-	size_t	size;
-
 	if (a->size == 2)
 	{
 		if (GET_NODE(a->stack)->value > GET_NODE(a->stack->next)->value)
@@ -50,7 +49,7 @@ void	ps_sort_few(t_ps a, t_ps b, t_lst *ops)
  *
  * when length of stack is two, either use r or rr depending on the optimal
  */
-t_lst	compress_ops(t_ps a, t_ps b, t_lst ops)
+t_lst	compress_ops(t_lst ops)
 {
 	t_lst	walk;
 	t_lst	tmp;
@@ -96,19 +95,29 @@ int		*ps_vals_asarray(t_ps ps, size_t *size)
 		*size = i;
 	return (arr);
 }
-
+
+/* FIXME: if value is after the split, we shall use reverse rotation */
 int		find_fit(t_ps a, t_ps_node *node)
 {
-	t_lst	ops;
 	int		*arr;
 	size_t	size;
 	int		n_rots;
 
-	ops = NULL;
 	arr = ps_vals_asarray(a, &size);
 	n_rots = binary_search_range(node->value,
 								 arr, 0, size - 1, ascending_order);
+
+	/* if (n_rots >= (int)a->len / 2) */
+	/* 	n_rots -= a->len / 2 + 1; */
+	/* if (n_rots > ((int)a->len) / 2) */
+	/* 	n_rots = a->len / 2 - (n_rots - (a->len / 2)); */
+
+	ft_printf("%{red_fg}old: %d -> ", n_rots);
+	if (n_rots > (int)(a->len - 1) / 2)
+		n_rots -= (int)(a->len - 1);
+	ft_printf("%{blue_fg}new: %d%{reset}", n_rots);
 	free(arr);
+
 	/* while (true) */
 	/* { */
 	/* 	if (b_rots--) */
@@ -134,7 +143,7 @@ t_lst	gen_ops(t_ps_node *node)
 	ft_printf("generating ops for %{red_fg}(%d)%{reset}\n"
 			  " >> rots on stack A [%d] rots on stack B [%d]",
 			  node->value, node->a_cost, node->b_cost);
-	// getchar();
+	/* getchar(); */
 
 
 	while (i < (int)ABS(node->a_cost) || j < (int)ABS(node->b_cost))
@@ -146,18 +155,17 @@ t_lst	gen_ops(t_ps_node *node)
 		if (j++ < (int)ABS(node->b_cost))
 			op_save(false, OP_INIT(node->b_cost > 0 ? OP_ROT : OP_RROT,
 								   APPLY_ON_B), &ops, NULL, NULL);
-		ft_printf("ops..\n");
-		// getchar();
 	}
 	op_save(false, OP_INIT(OP_PUSH, APPLY_ON_A), &ops, NULL, NULL);
 
+	compress_ops(ops);
 	ft_printf("dumped ops: \n\n");
 	ft_lstiter(ops, helper_op_dump);
-	// getchar();
+	/* getchar(); */
 
 	/* or should all it sync_ops? */
 	/* return (compress_ops(ops)) */
-	return (compress_ops(NULL, NULL, ops));
+	return (ops);
 }
 
 void	adjust_stack(t_ps a, t_lst *ops)
@@ -171,9 +179,9 @@ void	adjust_stack(t_ps a, t_lst *ops)
 	arr = ps_vals_asarray(a, &size);
 	n_rots = binary_search_find_min(arr, 0, size - 1, ascending_order);
 
-	if (n_rots > a->len / 2)
+	if (n_rots >= a->len / 2)
 	{
-		n_rots = a->len / 2 - (n_rots - (a->len / 2)) - 1;
+		n_rots -= (a->len / 2 - 1);
 		is_up = false;
 	}
 	ft_printf("nrots to get min: %d\n", n_rots);
@@ -191,6 +199,7 @@ void	push_swap(t_ps a, t_ps b)
 	t_lst optimal_ops;
 	int b_rots;
 	int a_rots;
+	t_lst node;
 
 	if (ps_issorted(a, b))
 		return ;
@@ -217,14 +226,12 @@ void	push_swap(t_ps a, t_ps b)
 
 		ft_printf(" ----- current ops -----\n\n");
 		ft_lstiter(ops, helper_op_dump);
-		// getchar();
+		getchar();
 		dump_stacks(a, b);
-		// getchar();
-
+		getchar();
+
 		while (walk)
 		{
-			/* size_t imin, imax; */
-
 			a_rots = find_fit(a, walk->content);
 			GET_NODE(walk)->a_cost = a_rots;
 
@@ -234,26 +241,34 @@ void	push_swap(t_ps a, t_ps b)
 			ft_printf(" >> %d rots to place %d in A\n",
 					  a_rots, GET_NODE(walk)->value);
 
-			GET_NODE(walk)->b_cost = b_rots++;
+			/* should rotate b reversed too */
+			if ((GET_NODE(walk)->b_cost = b_rots) > (int)(b->len - 1) / 2)
+				GET_NODE(walk)->b_cost -= (int)(b->len - 1);
 
+			b_rots++;
 			tmp_ops = gen_ops(walk->content);
 
 			if (!optimal_ops)
+			{
 				optimal_ops = tmp_ops;
+				node = walk;
+			}
 			else if (ft_lstlen(tmp_ops) < ft_lstlen(optimal_ops))
 			{
 				ft_lstdel(&optimal_ops, lstdel_helper);
 				optimal_ops = tmp_ops;
+				node = walk;
 			}
 
 			if (ft_lstlen(optimal_ops) <= 2)
 				break;
-
-			// getchar();
-
 			walk = walk->next;
 		}
-		/* do optimal ops */
+
+		ft_printf("target node: ");
+		helper_node_dump(node);
+		dump_stacks(a, b);
+		getchar();
 		ft_printf("%{green_fg}applying ops%{reset}\n");
 		walk = optimal_ops;
 		while (walk)
@@ -261,7 +276,7 @@ void	push_swap(t_ps a, t_ps b)
 			op_save(true, *(t_op *)walk->content, &ops, a, b);
 			walk = walk->next;
 		}
-		// getchar();
+		getchar();
 		ft_lstdel(&optimal_ops, lstdel_helper);
 	}
 
@@ -317,9 +332,6 @@ int		main(int argc, char **argv)
 	t_ps ps_a;
 	t_ps ps_b;
 
-	size_t imin;
-	size_t imax;
-
 	if (!(ps_a = read_args(argc, argv)))
 		return EXIT_FAILURE;
 	ps_b = ps_alloc('b', ps_a->size);
@@ -328,7 +340,7 @@ int		main(int argc, char **argv)
 
 	/* op_dorot(ps_a, false); */
 	/* dump_stacks(ps_a, ps_b); */
-	/* // getchar(); */
+	/*  getchar(); */
 
 	push_swap(ps_a, ps_b);
 

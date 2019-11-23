@@ -6,7 +6,7 @@
 #    By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/01 23:13:45 by archid-           #+#    #+#              #
-#    Updated: 2019/11/21 00:24:48 by archid-          ###   ########.fr        #
+#    Updated: 2019/11/23 18:45:08 by archid-          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -18,12 +18,12 @@ CHECKER 	= src/checker.c
 CFLAGS		= -g -Wall -Wextra
 LDFLAGS 	= -Iinclude -Ilibft -Llibft -lft
 
-.PHONY: all it
-
 all:
-	make -C libft
-	gcc $(CFLAGS) $(CORE_SRCS) $(PUSH_SWAP) -o push_swap $(LDFLAGS)
-	gcc $(CFLAGS) $(CORE_SRCS) $(CHECKER) -o checker $(LDFLAGS)
+	@make -C libft
+	@gcc $(CFLAGS) $(CORE_SRCS) $(PUSH_SWAP) -o push_swap $(LDFLAGS)
+	@gcc $(CFLAGS) $(CORE_SRCS) $(CHECKER) -o checker $(LDFLAGS)
 
 it: all
 	./checker $(ARGS) < ./push_swap $(ARGS)
+
+.PHONY: all it

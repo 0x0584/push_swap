@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:16:42 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/23 00:06:12 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/23 16:22:47 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ void	helper_node_dump(t_lst e)
 
 	if (!e || !(node = GET_NODE(e)))
 		return ;
-	ft_dprintf(2, "%{green_fg}(%d)%{reset} ", node->value);
+	ft_dprintf(2, "%{green_fg}(%d)%{yellow_fg}[%d]%{blue_fg}[%d]%{reset} ",
+			   node->value, node->a_cost, node->b_cost);
 }
 
 void	helper_fdump(t_ps ps)
