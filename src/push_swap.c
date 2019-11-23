@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/23 00:20:53 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/23 01:05:48 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #define AS_NODE(obj)							((t_ps_node *)obj)
 #define FEW_ELEMENTS							(3)
 
+/* test passed: 0 9 4 11 8 7 55 44 33 22 101 402 -1 */
 void	op_save(bool commit, t_op op, t_lst *ops, t_ps a, t_ps b)
 {
 	if (commit && !op_apply(op, a, b))
@@ -133,7 +134,7 @@ t_lst	gen_ops(t_ps_node *node)
 	ft_printf("generating ops for %{red_fg}(%d)%{reset}\n"
 			  " >> rots on stack A [%d] rots on stack B [%d]",
 			  node->value, node->a_cost, node->b_cost);
-	getchar();
+	// getchar();
 
 
 	while (i < (int)ABS(node->a_cost) || j < (int)ABS(node->b_cost))
@@ -146,17 +147,39 @@ t_lst	gen_ops(t_ps_node *node)
 			op_save(false, OP_INIT(node->b_cost > 0 ? OP_ROT : OP_RROT,
 								   APPLY_ON_B), &ops, NULL, NULL);
 		ft_printf("ops..\n");
-		getchar();
+		// getchar();
 	}
 	op_save(false, OP_INIT(OP_PUSH, APPLY_ON_A), &ops, NULL, NULL);
 
 	ft_printf("dumped ops: \n\n");
 	ft_lstiter(ops, helper_op_dump);
-	getchar();
+	// getchar();
 
 	/* or should all it sync_ops? */
 	/* return (compress_ops(ops)) */
-	return (ops);
+	return (compress_ops(NULL, NULL, ops));
+}
+
+void	adjust_stack(t_ps a, t_lst *ops)
+{
+	int		*arr;
+	size_t	size;
+	size_t	n_rots;
+	bool is_up;
+
+	is_up = true;
+	arr = ps_vals_asarray(a, &size);
+	n_rots = binary_search_find_min(arr, 0, size - 1, ascending_order);
+
+	if (n_rots > a->len / 2)
+	{
+		n_rots = a->len / 2 - (n_rots - (a->len / 2)) - 1;
+		is_up = false;
+	}
+	ft_printf("nrots to get min: %d\n", n_rots);
+	while (n_rots--)
+		op_save(true, OP_INIT(is_up ? OP_ROT : OP_RROT, APPLY_ON_A),
+				ops, a, NULL);
 }
 
 
@@ -194,9 +217,9 @@ void	push_swap(t_ps a, t_ps b)
 
 		ft_printf(" ----- current ops -----\n\n");
 		ft_lstiter(ops, helper_op_dump);
-		getchar();
+		// getchar();
 		dump_stacks(a, b);
-		getchar();
+		// getchar();
 
 		while (walk)
 		{
@@ -226,7 +249,7 @@ void	push_swap(t_ps a, t_ps b)
 			if (ft_lstlen(optimal_ops) <= 2)
 				break;
 
-			getchar();
+			// getchar();
 
 			walk = walk->next;
 		}
@@ -238,16 +261,22 @@ void	push_swap(t_ps a, t_ps b)
 			op_save(true, *(t_op *)walk->content, &ops, a, b);
 			walk = walk->next;
 		}
-		getchar();
+		// getchar();
 		ft_lstdel(&optimal_ops, lstdel_helper);
 	}
+
+	ft_printf(" << maybe rotated stacks >>\n");
+	dump_stacks(a, b);
+	ft_printf(" << final stacks >>\n");
+	adjust_stack(a, &ops);
+	dump_stacks(a, b);
+
+	ft_printf(" << final operations >>\n");
+
 	ft_lstiter(ops, helper_op_dump);
 	ft_lstdel(&ops, helper_op_free);
 
-	ft_printf(" << final stacks >>\n");
-	dump_stacks(a, b);
-
-	ft_printf("FINAL RESULT: %s", ps_issorted(a, b) ? "OK" : "KO");
+	ft_printf("FINAL RESULT: %s\n", ps_issorted(a, b) ? "OK" : "KO");
 }
 
 
@@ -299,7 +328,7 @@ int		main(int argc, char **argv)
 
 	/* op_dorot(ps_a, false); */
 	/* dump_stacks(ps_a, ps_b); */
-	/* getchar(); */
+	/* // getchar(); */
 
 	push_swap(ps_a, ps_b);
 
