@@ -1,1 +1,1 @@
-ruby -e "puts (1..101).to_a.shuffle.take(20).join(' ')"
+ruby -e "puts (-1001..1001).to_a.shuffle.take(500).join(' ')"

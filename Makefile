@@ -20,8 +20,8 @@ LDFLAGS 	= -Iinclude -Ilibft -Llibft -lft
 
 all:
 	@make -C libft
-	@gcc $(CFLAGS) $(CORE_SRCS) $(PUSH_SWAP) -o push_swap $(LDFLAGS)
-	@gcc $(CFLAGS) $(CORE_SRCS) $(CHECKER) -o checker $(LDFLAGS)
+	gcc $(CFLAGS) $(CORE_SRCS) $(PUSH_SWAP) -o push_swap $(LDFLAGS)
+	gcc $(CFLAGS) $(CORE_SRCS) $(CHECKER) -o checker $(LDFLAGS)
 
 it: all
 	./checker $(ARGS) < ./push_swap $(ARGS)

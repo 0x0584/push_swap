@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/23 18:48:55 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/23 20:33:35 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/24 18:27:04 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 /* ./rot 68 13 51 1 */
 /* expected -1 */
 /* it might be that the number of elements is odd or even!! */
+
 int main(int argc, char *argv[])
 {
     int *arr;
@@ -35,10 +36,9 @@ int main(int argc, char *argv[])
 
 	int n_rots = binary_search_range(ft_atoi(argv[1]), arr,
 									 0, i - 1, ascending_order);
-	if (n_rots >= (i - 1) / 2)
-		n_rots -= (i - 1);
+	int min_index = binary_search_find_min(arr, 0, i - 1, ascending_order);
 
-	ft_printf(" >> %d\n", n_rots);
+	ft_printf(" >> %d %d\n", min_index,  n_rots);
 
     return 0;
 }

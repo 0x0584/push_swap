@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/23 20:03:45 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/24 21:28:47 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ int		*ps_vals_asarray(t_ps ps, size_t *size)
 		*size = i;
 	return (arr);
 }
+
 
 /* FIXME: if value is after the split, we shall use reverse rotation */
 int		find_fit(t_ps a, t_ps_node *node)
@@ -113,7 +114,7 @@ int		find_fit(t_ps a, t_ps_node *node)
 	/* 	n_rots = a->len / 2 - (n_rots - (a->len / 2)); */
 
 	ft_printf("%{red_fg}old: %d -> ", n_rots);
-	if (n_rots > (int)(a->len - 1) / 2)
+	if (n_rots > (int)(a->len - 2) / 1)
 		n_rots -= (int)(a->len - 1);
 	ft_printf("%{blue_fg}new: %d%{reset}", n_rots);
 	free(arr);
@@ -143,7 +144,7 @@ t_lst	gen_ops(t_ps_node *node)
 	ft_printf("generating ops for %{red_fg}(%d)%{reset}\n"
 			  " >> rots on stack A [%d] rots on stack B [%d]",
 			  node->value, node->a_cost, node->b_cost);
-	/* getchar(); */
+	/* //getchar(); */
 
 
 	while (i < (int)ABS(node->a_cost) || j < (int)ABS(node->b_cost))
@@ -159,9 +160,9 @@ t_lst	gen_ops(t_ps_node *node)
 	op_save(false, OP_INIT(OP_PUSH, APPLY_ON_A), &ops, NULL, NULL);
 
 	compress_ops(ops);
-	ft_printf("dumped ops: \n\n");
-	ft_lstiter(ops, helper_op_dump);
-	/* getchar(); */
+	/* ft_printf("dumped ops: \n\n"); */
+	/* ft_lstiter(ops, helper_op_dump); */
+	/* //getchar(); */
 
 	/* or should all it sync_ops? */
 	/* return (compress_ops(ops)) */
@@ -172,24 +173,36 @@ void	adjust_stack(t_ps a, t_lst *ops)
 {
 	int		*arr;
 	size_t	size;
-	size_t	n_rots;
+	int		n_rots;
+	int min;
+	int max;
+
 	bool is_up;
 
+	if (ps_issorted(a, NULL))
+		return ;
 	is_up = true;
 	arr = ps_vals_asarray(a, &size);
-	n_rots = binary_search_find_min(arr, 0, size - 1, ascending_order);
+	min = binary_search_find_min(arr, 0, size - 1, ascending_order);
 
-	if (n_rots >= a->len / 2)
+	if (min == 0)
+		max = size - 1;
+	else
+		max = min - 1;
+	is_up = false;
+	n_rots = (size - 1) - min - 1;
+	if (n_rots >= 0)
 	{
-		n_rots -= (a->len / 2 - 1);
-		is_up = false;
+		n_rots = max + 1;
+		is_up = true;
 	}
+	else
+		n_rots = ABS(n_rots);
 	ft_printf("nrots to get min: %d\n", n_rots);
 	while (n_rots--)
 		op_save(true, OP_INIT(is_up ? OP_ROT : OP_RROT, APPLY_ON_A),
 				ops, a, NULL);
 }
-
 
 void	push_swap(t_ps a, t_ps b)
 {
@@ -217,6 +230,8 @@ void	push_swap(t_ps a, t_ps b)
 		op_save(true, OP_INIT(OP_PUSH, APPLY_ON_B), &ops, a, b);
 	ps_sort_few(a, b, &ops);
 
+	dump_stacks(a, b);
+
 	while (b->len)
 	{
 		walk = b->stack;
@@ -224,11 +239,9 @@ void	push_swap(t_ps a, t_ps b)
 		b_rots = 0;
 		tmp_ops = NULL;
 
-		ft_printf(" ----- current ops -----\n\n");
-		ft_lstiter(ops, helper_op_dump);
-		getchar();
-		dump_stacks(a, b);
-		getchar();
+		/* ft_printf(" ----- current ops -----\n\n"); */
+		/* ft_lstiter(ops, helper_op_dump); */
+		/* //getchar(); */
 
 		while (walk)
 		{
@@ -243,7 +256,7 @@ void	push_swap(t_ps a, t_ps b)
 
 			/* should rotate b reversed too */
 			if ((GET_NODE(walk)->b_cost = b_rots) > (int)(b->len - 1) / 2)
-				GET_NODE(walk)->b_cost -= (int)(b->len - 1);
+				GET_NODE(walk)->b_cost -= (int)(b->len);
 
 			b_rots++;
 			tmp_ops = gen_ops(walk->content);
@@ -262,13 +275,14 @@ void	push_swap(t_ps a, t_ps b)
 
 			if (ft_lstlen(optimal_ops) <= 2)
 				break;
+
 			walk = walk->next;
 		}
 
 		ft_printf("target node: ");
 		helper_node_dump(node);
 		dump_stacks(a, b);
-		getchar();
+		//getchar();
 		ft_printf("%{green_fg}applying ops%{reset}\n");
 		walk = optimal_ops;
 		while (walk)
@@ -276,7 +290,6 @@ void	push_swap(t_ps a, t_ps b)
 			op_save(true, *(t_op *)walk->content, &ops, a, b);
 			walk = walk->next;
 		}
-		getchar();
 		ft_lstdel(&optimal_ops, lstdel_helper);
 	}
 
@@ -340,7 +353,7 @@ int		main(int argc, char **argv)
 
 	/* op_dorot(ps_a, false); */
 	/* dump_stacks(ps_a, ps_b); */
-	/*  getchar(); */
+	/*  //getchar(); */
 
 	push_swap(ps_a, ps_b);
 
