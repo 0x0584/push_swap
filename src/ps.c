@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/25 04:33:07 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/25 06:20:46 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,15 +91,27 @@ bool		ps_check_node(t_ps ps, t_ps_node *node)
 
 void	ps_sort_few(t_ps a, t_ps b, t_lst *ops)
 {
-	if (a->size == 2)
+	t_ps_array arr;
+
+	arr = ps_vals_asarray(a);
+	if (arr.size == 2 && arr.base[0] > arr.base[1])
+		return op_save(true, OP_INIT(OP_SWAP, APPLY_ON_A), ops, a, b);
+	if (arr.base[0] > arr.base[1] && arr.base[1] < arr.base[2])
+		op_save(true, OP_INIT(arr.base[0] > arr.base[2] ? OP_ROT : OP_SWAP,
+							  APPLY_ON_A), ops, a, b);
+	else if (arr.base[0] > arr.base[1] && arr.base[1] > arr.base[2])
 	{
-		if (GET_NODE(a->stack)->value > GET_NODE(a->stack->next)->value)
-			op_save(true, OP_INIT(OP_SWAP, APPLY_ON_A), ops, a, b);
+		op_save(true, OP_INIT(OP_SWAP, APPLY_ON_A), ops, a, b);
+		op_save(true, OP_INIT(OP_RROT, APPLY_ON_A), ops, a, b);
 	}
-	else if (a->size == FEW_ELEMENTS)
+	else if (arr.base[0] < arr.base[2] && arr.base[2] < arr.base[1])
 	{
-		/* compare the three elements */
+		op_save(true, OP_INIT(OP_SWAP, APPLY_ON_A), ops, a, b);
+		op_save(true, OP_INIT(OP_ROT, APPLY_ON_A), ops, a, b);
 	}
+	else if (arr.base[0] > arr.base[2] && arr.base[0] < arr.base[1])
+		op_save(true, OP_INIT(OP_RROT, APPLY_ON_A), ops, a, b);
+	free(arr.base);
 }
 
 t_ps_array	ps_vals_asarray(t_ps ps)
