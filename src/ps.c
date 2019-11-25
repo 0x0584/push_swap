@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/22 21:14:09 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/25 04:33:07 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,4 +87,37 @@ bool		ps_check_node(t_ps ps, t_ps_node *node)
 		walk = walk->next;
 	}
 	return (true);
+}
+
+void	ps_sort_few(t_ps a, t_ps b, t_lst *ops)
+{
+	if (a->size == 2)
+	{
+		if (GET_NODE(a->stack)->value > GET_NODE(a->stack->next)->value)
+			op_save(true, OP_INIT(OP_SWAP, APPLY_ON_A), ops, a, b);
+	}
+	else if (a->size == FEW_ELEMENTS)
+	{
+		/* compare the three elements */
+	}
+}
+
+t_ps_array	ps_vals_asarray(t_ps ps)
+{
+	t_ps_array	arr;
+	size_t		i;
+	t_lst		walk;
+
+	if (!ps || !(arr.base = ALLOC(int *, ft_lstlen(ps->stack) + 1,
+								  sizeof(int))))
+		return ((t_ps_array){NULL, 0});
+	i = 0;
+	walk = ps->stack;
+	while (walk)
+	{
+		arr.base[i++] = AS_NODE(walk->content)->value;
+		walk = walk->next;
+	}
+	arr.size = i;
+	return (arr);
 }

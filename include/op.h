@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:16:37 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/14 14:11:03 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/24 22:18:45 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct	s_op
 
 bool	op_apply(t_op op, t_ps foo, t_ps bar);
 bool	op_isvalid(char const *str, t_op *op);
+void	op_save(bool commit, t_op op, t_lst *ops, t_ps a, t_ps b);
 void	op_dump(t_op op);
 
 bool	op_dopsh(t_ps dest, t_ps src);

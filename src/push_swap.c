@@ -6,49 +6,14 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/24 21:28:47 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/25 05:40:48 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+
 #include "op.h"
 #include "reader.h"
-#define AS_NODE(obj)							((t_ps_node *)obj)
-#define FEW_ELEMENTS							(3)
 
-/* test passed: 0 9 4 11 8 7 55 44 33 22 101 402 -1 */
-
-void	op_save(bool commit, t_op op, t_lst *ops, t_ps a, t_ps b)
-{
-	if (commit && !op_apply(op, a, b))
-	{
-		ft_dprintf(2, "%{yellow_fg}note: cannot apply operation!\n%{reset}");
-		op_dump(op);
-	}
-	ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
-}
-
-/*  */
-void	find_split(t_ps ps, size_t *min_index, size_t *max_index);
-bool	node_order(t_ps_node *left, t_ps_node *middle, t_ps_node *right);
-void	lstdel_helper(void *content, size_t content_size);
-
-void	ps_sort_few(t_ps a, t_ps b, t_lst *ops)
-{
-	if (a->size == 2)
-	{
-		if (GET_NODE(a->stack)->value > GET_NODE(a->stack->next)->value)
-			op_save(true, OP_INIT(OP_SWAP, APPLY_ON_A), ops, a, b);
-	}
-	else if (a->size == FEW_ELEMENTS)
-	{
-		/* compare the three elements */
-	}
-}
 
-/* FIXME: optimize when possible
- *
- * when length of stack is two, either use r or rr depending on the optimal
- */
 t_lst	compress_ops(t_lst ops)
 {
 	t_lst	walk;
@@ -61,8 +26,8 @@ t_lst	compress_ops(t_lst ops)
 		op[0] = walk->content;
 		op[1] = walk->next->content;
 		if (((op[0]->op == OP_ROT && op[1]->op == OP_ROT)
-			 || (op[0]->op == OP_RROT && op[1]->op == OP_RROT)
-			 || (op[0]->op == OP_SWAP && op[1]->op == OP_SWAP))
+				|| (op[0]->op == OP_RROT && op[1]->op == OP_RROT)
+				|| (op[0]->op == OP_SWAP && op[1]->op == OP_SWAP))
 			&& ((op[0]->which == APPLY_ON_A && op[1]->which == APPLY_ON_B)
 				|| (op[1]->which == APPLY_ON_A && op[0]->which == APPLY_ON_B)))
 		{
@@ -75,63 +40,8 @@ t_lst	compress_ops(t_lst ops)
 	}
 	return (ops);
 }
-
-int		*ps_vals_asarray(t_ps ps, size_t *size)
-{
-	int		*arr;
-	size_t	i;
-	t_lst	walk;
-
-	if (!ps || !(arr = ALLOC(int *, ft_lstlen(ps->stack) + 1, sizeof(int))))
-		return (NULL);
-	walk = ps->stack;
-	i = 0;
-	while (walk)
-	{
-		arr[i++] = AS_NODE(walk->content)->value;
-		walk = walk->next;
-	}
-	if (size)
-		*size = i;
-	return (arr);
-}
-
 
-/* FIXME: if value is after the split, we shall use reverse rotation */
-int		find_fit(t_ps a, t_ps_node *node)
-{
-	int		*arr;
-	size_t	size;
-	int		n_rots;
-
-	arr = ps_vals_asarray(a, &size);
-	n_rots = binary_search_range(node->value,
-								 arr, 0, size - 1, ascending_order);
-
-	/* if (n_rots >= (int)a->len / 2) */
-	/* 	n_rots -= a->len / 2 + 1; */
-	/* if (n_rots > ((int)a->len) / 2) */
-	/* 	n_rots = a->len / 2 - (n_rots - (a->len / 2)); */
-
-	ft_printf("%{red_fg}old: %d -> ", n_rots);
-	if (n_rots > (int)(a->len - 2) / 1)
-		n_rots -= (int)(a->len - 1);
-	ft_printf("%{blue_fg}new: %d%{reset}", n_rots);
-	free(arr);
-
-	/* while (true) */
-	/* { */
-	/* 	if (b_rots--) */
-	/* 	{ */
-
-	/* 	} */
-	/* 	op_save(OP_INIT(OP_ROT, APPLY_ON_A), &ops, a, b); */
-	/* } */
-	/* op_save(OP_INIT(OP_PUSH, APPLY_ON_A), &ops, a, b); */
-	return n_rots;
-}
-
-t_lst	gen_ops(t_ps_node *node)
+t_lst	gen_ops(t_ps_array arr, t_ps b, int b_rots, t_ps_node *node)
 {
 	t_lst	ops;
 	int		i;
@@ -140,13 +50,11 @@ t_lst	gen_ops(t_ps_node *node)
 	j = 0;
 	i = 0;
 	ops = NULL;
-
-	ft_printf("generating ops for %{red_fg}(%d)%{reset}\n"
-			  " >> rots on stack A [%d] rots on stack B [%d]",
-			  node->value, node->a_cost, node->b_cost);
-	/* //getchar(); */
-
-
+	node->a_cost = binary_search_range(node->value, arr.base,
+									   0, arr.size - 1, ascending_order);
+	if (b_rots > (int)(b->len - 1) / 2)
+		b_rots -= (int)b->len;
+	node->b_cost = b_rots;
 	while (i < (int)ABS(node->a_cost) || j < (int)ABS(node->b_cost))
 	{
 
@@ -158,214 +66,104 @@ t_lst	gen_ops(t_ps_node *node)
 								   APPLY_ON_B), &ops, NULL, NULL);
 	}
 	op_save(false, OP_INIT(OP_PUSH, APPLY_ON_A), &ops, NULL, NULL);
-
-	compress_ops(ops);
-	/* ft_printf("dumped ops: \n\n"); */
-	/* ft_lstiter(ops, helper_op_dump); */
-	/* //getchar(); */
-
-	/* or should all it sync_ops? */
-	/* return (compress_ops(ops)) */
-	return (ops);
+	return (compress_ops(ops));
 }
-
+
 void	adjust_stack(t_ps a, t_lst *ops)
 {
-	int		*arr;
-	size_t	size;
-	int		n_rots;
-	int min;
-	int max;
-
-	bool is_up;
+	t_ps_array	arr;
+	int			n_rots;
+	int			min;
+	int			max;
+	bool		is_up;
 
 	if (ps_issorted(a, NULL))
 		return ;
 	is_up = true;
-	arr = ps_vals_asarray(a, &size);
-	min = binary_search_find_min(arr, 0, size - 1, ascending_order);
-
-	if (min == 0)
-		max = size - 1;
-	else
-		max = min - 1;
-	is_up = false;
-	n_rots = (size - 1) - min - 1;
-	if (n_rots >= 0)
-	{
+	arr = ps_vals_asarray(a);
+	min = binary_search_find_min(arr.base, 0, arr.size - 1, ascending_order);
+	max = (min == 0) ? (int)arr.size - 1 : min - 1;
+	n_rots = (int)arr.size - 1 - min - 1;
+	if ((is_up = (n_rots >= 0)))
 		n_rots = max + 1;
-		is_up = true;
-	}
 	else
 		n_rots = ABS(n_rots);
-	ft_printf("nrots to get min: %d\n", n_rots);
 	while (n_rots--)
 		op_save(true, OP_INIT(is_up ? OP_ROT : OP_RROT, APPLY_ON_A),
 				ops, a, NULL);
+	free(arr.base);
 }
 
-void	push_swap(t_ps a, t_ps b)
+void	append_ops(t_ps a, t_ps b, t_lst *ops, t_lst *new)
 {
-	t_lst ops;
 	t_lst walk;
-	t_lst tmp_ops;
-	t_lst optimal_ops;
-	int b_rots;
-	int a_rots;
-	t_lst node;
 
-	if (ps_issorted(a, b))
+	if (!SAFE_PTRVAL(new))
 		return ;
+	walk = *new;
+	while (walk)
+	{
+		op_save(true, *(t_op *)walk->content, ops, a, b);
+		walk = walk->next;
+	}
+	ft_lstdel(new, lstdel_helper);
+}
+
+void	push_swap(t_ps a, t_ps b, t_lst *ops)
+{
+	t_ps_array	arr;
+	t_lst		walk;
+	t_lst		tmp_ops[2];
+	int			b_rots;
 
-	ops = NULL;
-	optimal_ops = NULL;
-
-	/* either we have few */
-
-	if (a->size <= FEW_ELEMENTS)
-		return ps_sort_few(a, b, &ops);
-
-	/* or push everything to b and leave few */
-	while (a->len - FEW_ELEMENTS)
-		op_save(true, OP_INIT(OP_PUSH, APPLY_ON_B), &ops, a, b);
-	ps_sort_few(a, b, &ops);
-
-	dump_stacks(a, b);
-
+	tmp_ops[0] = NULL;
 	while (b->len)
 	{
-		walk = b->stack;
-		a_rots = 0;
 		b_rots = 0;
-		tmp_ops = NULL;
-
-		/* ft_printf(" ----- current ops -----\n\n"); */
-		/* ft_lstiter(ops, helper_op_dump); */
-		/* //getchar(); */
-
+		walk = b->stack;
+		tmp_ops[1] = NULL;
+		arr = ps_vals_asarray(a);
 		while (walk)
 		{
-			a_rots = find_fit(a, walk->content);
-			GET_NODE(walk)->a_cost = a_rots;
-
-			ft_printf("\n%d rots to get %d from B.\n",
-					  b_rots, GET_NODE(walk)->value);
-
-			ft_printf(" >> %d rots to place %d in A\n",
-					  a_rots, GET_NODE(walk)->value);
-
-			/* should rotate b reversed too */
-			if ((GET_NODE(walk)->b_cost = b_rots) > (int)(b->len - 1) / 2)
-				GET_NODE(walk)->b_cost -= (int)(b->len);
-
-			b_rots++;
-			tmp_ops = gen_ops(walk->content);
-
-			if (!optimal_ops)
+			tmp_ops[1] = gen_ops(arr, b, b_rots++, walk->content);
+			if (!tmp_ops[0])
+			    tmp_ops[0] = tmp_ops[1];
+			else if (ft_lstlen(tmp_ops[1]) < ft_lstlen(tmp_ops[0]))
 			{
-				optimal_ops = tmp_ops;
-				node = walk;
+				ft_lstdel(&tmp_ops[0], lstdel_helper);
+				tmp_ops[0] = tmp_ops[1];
 			}
-			else if (ft_lstlen(tmp_ops) < ft_lstlen(optimal_ops))
-			{
-				ft_lstdel(&optimal_ops, lstdel_helper);
-				optimal_ops = tmp_ops;
-				node = walk;
-			}
-
-			if (ft_lstlen(optimal_ops) <= 2)
-				break;
-
 			walk = walk->next;
 		}
-
-		ft_printf("target node: ");
-		helper_node_dump(node);
-		dump_stacks(a, b);
-		//getchar();
-		ft_printf("%{green_fg}applying ops%{reset}\n");
-		walk = optimal_ops;
-		while (walk)
-		{
-			op_save(true, *(t_op *)walk->content, &ops, a, b);
-			walk = walk->next;
-		}
-		ft_lstdel(&optimal_ops, lstdel_helper);
+		free(arr.base);
+		append_ops(a, b, ops, &tmp_ops[0]);
 	}
-
-	ft_printf(" << maybe rotated stacks >>\n");
-	dump_stacks(a, b);
-	ft_printf(" << final stacks >>\n");
-	adjust_stack(a, &ops);
-	dump_stacks(a, b);
-
-	ft_printf(" << final operations >>\n");
-
-	ft_lstiter(ops, helper_op_dump);
-	ft_lstdel(&ops, helper_op_free);
-
-	ft_printf("FINAL RESULT: %s\n", ps_issorted(a, b) ? "OK" : "KO");
 }
-
-
-
-/* ascending order
- * Complexity: O(N) */
-
-void	find_split(t_ps ps, size_t *min_index, size_t *max_index)
-{
-	void	**arr;
-	size_t	i;
-	size_t	size;
-
-	if (!ps || !ps->stack || !(arr = ft_lst_content_asarray(ps->stack, &size)))
-		return ;
-	i = 0;
-	*min_index = 0;
-	while (i < size)
-	{
-		if (AS_NODE(arr[i])->value < AS_NODE(arr[*min_index])->value)
-			*min_index = i;
-		i++;
-	}
-	*min_index = i;
-	*max_index = (i + size - 1) % size;
-}
-
-bool	node_order(t_ps_node *left, t_ps_node *middle, t_ps_node *right)
-{
-	if (!left || !middle || !right)
-		return (false);
-	return (left->value < middle->value && middle ->value < right->value);
-}
-
 
 int		main(int argc, char **argv)
 {
 	t_ps ps_a;
 	t_ps ps_b;
+	t_lst ops;
 
-	if (!(ps_a = read_args(argc, argv)))
+	if (!(ps_a = read_args(argc, argv)) || !(ps_b = ps_alloc('b', ps_a->size)))
 		return EXIT_FAILURE;
-	ps_b = ps_alloc('b', ps_a->size);
-
-	/* dump_stacks(ps_a, ps_b); */
-
-	/* op_dorot(ps_a, false); */
-	/* dump_stacks(ps_a, ps_b); */
-	/*  //getchar(); */
-
-	push_swap(ps_a, ps_b);
-
-	/* find_split(ps_a, &imin, &imax); */
-	/* ft_printf("(min index: %d max index: %d)\n", imin, imax); */
-
+	ops = NULL;
+	if (ps_issorted(ps_a, ps_b))
+		return (EXIT_SUCCESS);
+	else if (ps_a->size <= FEW_ELEMENTS)
+		ps_sort_few(ps_a, ps_b, &ops);
+	else
+	{
+		while (ps_a->len - FEW_ELEMENTS)
+			op_save(true, OP_INIT(OP_PUSH, APPLY_ON_B), &ops, ps_a, ps_b);
+		push_swap(ps_a, ps_b, &ops);
+		adjust_stack(ps_a, &ops);
+	}
+	ft_lstiter(ops, helper_op_dump);
+	ft_lstdel(&ops, lstdel_helper);
+	ft_printf("FINAL RESULT: %s\n", ps_issorted(ps_a, ps_b) ? "OK" : "KO");
 	ps_del(&ps_a);
 	ps_del(&ps_b);
-
-	/* int arr[] = {4,5,6,7,8,9,0,1,2,3}; */
-	/* test(); */
-
 	return (EXIT_SUCCESS);
-
 }

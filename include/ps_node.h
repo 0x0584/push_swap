@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 15:32:41 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/22 20:51:52 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/24 22:19:52 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "libft.h"
 
 # define GET_NODE(e)					((t_ps_node *)e->content)
+# define AS_NODE(obj)					((t_ps_node *)obj)
 
 # define CHECK_MAX(val)					((long)val <= (long)INT_MAX)
 # define CHECK_MIN(val)					((long)val >= (long)INT_MIN)

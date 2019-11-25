@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:41:51 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/23 00:16:02 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/24 22:20:05 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,20 +81,11 @@ bool		op_apply(t_op op, t_ps foo, t_ps bar)
 	return (false);
 }
 
-# define AS_NODE(foo) ((t_ps_node *)foo)
-
 bool		op_dopsh(t_ps dest, t_ps src)
 {
 	if (!dest || !src || !src->len || dest->len == dest->size + 1)
-	{
-
-		ft_printf("exit from false! dest: %d / %d | src: %d / %d\n",
-				  dest->len, dest->size, src->len, src->size);
 		return (false);
-	}
-	ft_dprintf(2, ">> APPLYING OP: %{red_fg}p%c%{reset}\n", dest->symb);
 	ft_lstadd(&dest->stack, ft_lstpeek(&src->stack));
-
 	if (AS_NODE(dest->stack->content)->value < dest->min.value)
 		dest->min.value = AS_NODE(dest->stack->content)->value;
 	if (AS_NODE(dest->stack->content)->value > dest->max.value)
@@ -111,7 +102,6 @@ bool		op_doswp(t_ps ps)
 
 	if (!ps || ps->len < 2)
 		return (false);
-	ft_dprintf(2, ">> APPLYING OP: %{red_fg}s%c%{reset}\n", ps->symb);
 	foo = ft_lstpeek(&ps->stack);
 	bar = ft_lstpeek(&ps->stack);
 	ft_lstadd(&ps->stack, foo);
@@ -119,41 +109,26 @@ bool		op_doswp(t_ps ps)
 	return (true);
 }
 
-/*
-   FIXME: tracking the tail of the stack is optimal for rotation!
-   so for the moment, i'll be using a singly linked list but when
-   finilizing the work, i'll switch to a doubly linked list.
-
-   also, rotation might recieve an argument indicating the number
-   of rotations, so that we can do it at once. this could be achieved
-   by creating a new list containing the elements that we can to rotate,
-   and put them on head or tail based on rotation.
-*/
-
 bool		op_dorot(t_ps ps, bool is_up)
 {
 	t_lst node;
 
 	if (!ps || ps->len < 2)
 		return (false);
-	ft_dprintf(2, ">> APPLYING OP: %{red_fg}r%s%c%{reset}\n",
-			   !is_up ? "r" : "", ps->symb);
-
-	/* ft_lstiter(ps->stack, helper_node_dump); */
-	/* getchar(); */
-
 	if (is_up)
 		node = ft_lstpeek(&ps->stack);
 	else
 		node = ft_lstpop(&ps->stack);
-
 	if (is_up)
 		ft_lstpush(&ps->stack, node);
 	else
 		ft_lstadd(&ps->stack, node);
-
-	/* ft_lstiter(ps->stack, helper_node_dump); */
-	/* getchar(); */
-
 	return (true);
+}
+
+void	op_save(bool commit, t_op op, t_lst *ops, t_ps a, t_ps b)
+{
+	if (commit)
+		op_apply(op, a, b);
+	ft_lstpush(ops, ft_lstnew(&op, sizeof(t_op)));
 }
