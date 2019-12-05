@@ -6,14 +6,14 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/25 05:40:48 by archid-          ###   ########.fr       */
+/*   Updated: 2019/11/28 21:35:24 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "op.h"
 #include "reader.h"
+#include "dump.h"
 
-
 t_lst	compress_ops(t_lst ops)
 {
 	t_lst	walk;
@@ -40,7 +40,7 @@ t_lst	compress_ops(t_lst ops)
 	}
 	return (ops);
 }
-
+
 t_lst	gen_ops(t_ps_array arr, t_ps b, int b_rots, t_ps_node *node)
 {
 	t_lst	ops;
@@ -50,26 +50,24 @@ t_lst	gen_ops(t_ps_array arr, t_ps b, int b_rots, t_ps_node *node)
 	j = 0;
 	i = 0;
 	ops = NULL;
-	node->a_cost = binary_search_range(node->value, arr.base,
-									   0, arr.size - 1, ascending_order);
+	node->a_cost = find_range(node->value, arr.base, 0, arr.size - 1);
 	if (b_rots > (int)(b->len - 1) / 2)
 		b_rots -= (int)b->len;
 	node->b_cost = b_rots;
 	while (i < (int)ABS(node->a_cost) || j < (int)ABS(node->b_cost))
 	{
-
 		if (i++ < (int)ABS(node->a_cost))
-			op_save(false, OP_INIT(node->a_cost > 0 ? OP_ROT : OP_RROT,
-								   APPLY_ON_A), &ops, NULL, NULL);
+			ft_lstpush(&ops, op_as_node(node->a_cost > 0 ? OP_ROT : OP_RROT,
+											APPLY_ON_A));
 		if (j++ < (int)ABS(node->b_cost))
-			op_save(false, OP_INIT(node->b_cost > 0 ? OP_ROT : OP_RROT,
-								   APPLY_ON_B), &ops, NULL, NULL);
+			ft_lstpush(&ops, op_as_node(node->b_cost > 0 ? OP_ROT : OP_RROT,
+											APPLY_ON_B));
 	}
-	op_save(false, OP_INIT(OP_PUSH, APPLY_ON_A), &ops, NULL, NULL);
+	ft_lstpush(&ops, op_as_node(OP_PUSH, APPLY_ON_A));
 	return (compress_ops(ops));
 }
-
-void	adjust_stack(t_ps a, t_lst *ops)
+
+void	adjust_stack(t_ps a, t_lst *ops, t_flags *flags)
 {
 	t_ps_array	arr;
 	int			n_rots;
@@ -81,88 +79,73 @@ void	adjust_stack(t_ps a, t_lst *ops)
 		return ;
 	is_up = true;
 	arr = ps_vals_asarray(a);
-	min = binary_search_find_min(arr.base, 0, arr.size - 1, ascending_order);
+	min = binary_search_min(arr.base, 0, arr.size - 1);
 	max = (min == 0) ? (int)arr.size - 1 : min - 1;
 	n_rots = (int)arr.size - 1 - min - 1;
+	if (flags->verbose)
+		dump_state(a, NULL, NULL, NULL);
 	if ((is_up = (n_rots >= 0)))
 		n_rots = max + 1;
 	else
 		n_rots = ABS(n_rots);
 	while (n_rots--)
-		op_save(true, OP_INIT(is_up ? OP_ROT : OP_RROT, APPLY_ON_A),
+		op_save(OP_INIT(is_up ? OP_ROT : OP_RROT, APPLY_ON_A),
 				ops, a, NULL);
+	if (flags->verbose)
+		dump_state(a, NULL, NULL, NULL);
 	free(arr.base);
 }
-
-void	append_ops(t_ps a, t_ps b, t_lst *ops, t_lst *new)
-{
-	t_lst walk;
 
-	if (!SAFE_PTRVAL(new))
-		return ;
-	walk = *new;
-	while (walk)
-	{
-		op_save(true, *(t_op *)walk->content, ops, a, b);
-		walk = walk->next;
-	}
-	ft_lstdel(new, lstdel_helper);
-}
-
-void	push_swap(t_ps a, t_ps b, t_lst *ops)
+void	push_swap(t_ps a, t_ps b, t_lst *ops, t_flags *flags)
 {
+	t_ps_node	*node;
 	t_ps_array	arr;
 	t_lst		walk;
 	t_lst		tmp_ops[2];
 	int			b_rots;
 
 	tmp_ops[0] = NULL;
+	ps_sort_few(a, b, ops);
 	while (b->len)
 	{
 		b_rots = 0;
 		walk = b->stack;
-		tmp_ops[1] = NULL;
 		arr = ps_vals_asarray(a);
 		while (walk)
 		{
 			tmp_ops[1] = gen_ops(arr, b, b_rots++, walk->content);
-			if (!tmp_ops[0])
-			    tmp_ops[0] = tmp_ops[1];
-			else if (ft_lstlen(tmp_ops[1]) < ft_lstlen(tmp_ops[0]))
-			{
-				ft_lstdel(&tmp_ops[0], lstdel_helper);
-				tmp_ops[0] = tmp_ops[1];
-			}
+			take_best_ops(&tmp_ops[0], &tmp_ops[1], &node, walk->content);
 			walk = walk->next;
 		}
+		if (flags->verbose)
+			dump_state(a, b, tmp_ops[0], node);
 		free(arr.base);
 		append_ops(a, b, ops, &tmp_ops[0]);
 	}
+	adjust_stack(a, ops, flags);
 }
-
+
 int		main(int argc, char **argv)
 {
-	t_ps ps_a;
-	t_ps ps_b;
-	t_lst ops;
+	t_ps	ps_a;
+	t_ps	ps_b;
+	t_lst	ops;
+	t_flags	flags;
 
-	if (!(ps_a = read_args(argc, argv)) || !(ps_b = ps_alloc('b', ps_a->size)))
-		return EXIT_FAILURE;
+	if (!(ps_a = read_args(argc, argv, &flags)))
+		return (EXIT_FAILURE);
+	ps_b = ps_alloc('B', ps_a->size);
 	ops = NULL;
-	if (ps_issorted(ps_a, ps_b))
-		return (EXIT_SUCCESS);
-	else if (ps_a->size <= FEW_ELEMENTS)
-		ps_sort_few(ps_a, ps_b, &ops);
-	else
+	if (!ps_issorted(ps_a, ps_b))
 	{
-		while (ps_a->len - FEW_ELEMENTS)
-			op_save(true, OP_INIT(OP_PUSH, APPLY_ON_B), &ops, ps_a, ps_b);
-		push_swap(ps_a, ps_b, &ops);
-		adjust_stack(ps_a, &ops);
+		if (flags.verbose)
+			dump_state(ps_a, ps_b, NULL, NULL);
+		while (ps_a->len > FEW_ELEMENTS)
+			op_save(OP_INIT(OP_PUSH, APPLY_ON_B), &ops, ps_a, ps_b);
+		push_swap(ps_a, ps_b, &ops, &flags);
+		dump_ops(ops, &flags);
+		ft_lstdel(&ops, lstdel_helper);
 	}
-	ft_lstiter(ops, helper_op_dump);
-	ft_lstdel(&ops, lstdel_helper);
-	ft_printf("FINAL RESULT: %s\n", ps_issorted(ps_a, ps_b) ? "OK" : "KO");
 	ps_del(&ps_a);
 	ps_del(&ps_b);
 	return (EXIT_SUCCESS);
