@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:22:14 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/27 17:03:45 by archid-          ###   ########.fr       */
+/*   Updated: 2019/12/05 18:12:54 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_ps		ps_alloc(char symb, size_t size)
 		return (NULL);
 	ps->symb = symb;
 	ps->size = size;
+	ps->stack = queue_init();
 	return (ps);
 }
 
@@ -28,22 +29,21 @@ void		ps_del(t_ps *aps)
 {
 	if (!SAFE_PTRVAL(aps))
 		return ;
-	ft_lstdel(&(*aps)->stack, lstdel_helper);
+	queue_del(&(*aps)->stack, lstdel_helper);
 	free(*aps);
 	*aps = NULL;
 }
 
 bool		ps_issorted(t_ps ps_a, t_ps ps_b)
 {
-	t_lst walk;
+	t_qnode *walk;
 
-	if (!ps_a || !ps_a->stack || (ps_b && ps_b->stack))
+	if (!ps_a || (ps_b && queue_size(ps_b->stack)))
 		return (false);
-	walk = ps_a->stack;
-	while (walk->next)
+	walk = ps_a->stack->head->next;
+	while (walk->next != ps_a->stack->tail)
 	{
-		if (((t_ps_node *)walk->content)->value
-				> ((t_ps_node *)walk->next->content)->value)
+		if (AS_NODE(walk->blob)->value > AS_NODE(walk->next->blob)->value)
 			return (false);
 		walk = walk->next;
 	}
@@ -79,16 +79,16 @@ t_ps_array	ps_vals_asarray(t_ps ps)
 {
 	t_ps_array	arr;
 	size_t		i;
-	t_lst		walk;
+	t_qnode		*walk;
 
-	if (!ps || !(arr.base = ALLOC(int *, ft_lstlen(ps->stack) + 1,
+	if (!ps || !(arr.base = ALLOC(int *, queue_size(ps->stack) + 1,
 									sizeof(int))))
 		return ((t_ps_array){NULL, 0});
 	i = 0;
-	walk = ps->stack;
-	while (walk)
+	walk = ps->stack->head->next;
+	while (walk != ps->stack->tail)
 	{
-		arr.base[i++] = AS_NODE(walk->content)->value;
+		arr.base[i++] = AS_NODE(walk->blob)->value;
 		walk = walk->next;
 	}
 	arr.size = i;

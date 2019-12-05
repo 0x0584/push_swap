@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 14:17:31 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/28 20:50:21 by archid-          ###   ########.fr       */
+/*   Updated: 2019/12/05 16:33:45 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,19 +47,19 @@ void	dump_ops(t_lst ops, t_flags *flags)
 
 void	ps_dump(t_ps ps)
 {
-	t_lst		walk;
+	t_qnode		*walk;
 	t_ps_node	*node;
 	int			i;
 
 	if (!ps)
 		return ;
 	i = 0;
-	walk = ps->stack;
+	walk = ps->stack->head->next;
 	ft_dprintf(2, "\n   stack: %c[%zu/%zu]\n\n",
 				ps->symb, ps->len, ps->size);
-	while (walk)
+	while (walk != ps->stack->tail)
 	{
-		node = walk->content;
+		node = walk->blob;
 		ft_dprintf(2, "   %{green_fg}%+4d%{yellow_fg}"
 					"[%+.2d]%{blue_fg}[%+.2d]%{reset}\n",
 					node->value, node->a_cost, node->b_cost);

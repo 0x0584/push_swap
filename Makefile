@@ -26,9 +26,9 @@ CFLAGS		= -Wall -Wextra -g
 LDFT		= -L$(FTDIR) -lft
 DEPS		= -I$(DEPSDIR) -I$(FTDIR)
 
-MIN			= -1000
+MIN			= 0
 MAX			= 1000
-N_ELEMS		= 100
+N_ELEMS		= 500
 
 all: init push_swap checker
 

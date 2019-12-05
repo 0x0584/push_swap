@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 21:36:42 by archid-           #+#    #+#             */
-/*   Updated: 2019/12/05 14:26:59 by archid-          ###   ########.fr       */
+/*   Updated: 2019/12/05 17:23:26 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,16 @@
 
 static bool	check_node(t_ps ps, t_ps_node *node)
 {
-	t_lst		walk;
+	t_qnode		*walk;
 
-	walk = ps->stack;
-	while (walk && (AS_NODE(walk->content)->value != node->value))
+	walk = ps->stack->head->next;
+	while (walk != ps->stack->tail)
+	{
+		if (AS_NODE(walk->blob)->value == node->value)
+			return false;
 		walk = walk->next;
-	return (walk == NULL);
+	}
+	return (true);
 }
 
 static long	get_numeric_val(char *str)
@@ -92,8 +96,16 @@ t_ps		read_args(int ac, char **av, t_flags *flags)
 			ps_del(&ps);
 			break ;
 		}
-		ft_lstpush(&ps->stack, ft_lstnew(&node, sizeof(t_ps_node)));
+		queue_enq(ps->stack, queue_node(&node, sizeof(t_ps_node)));
 	}
+
+/*
+	queue_iter(ps->stack, dump_node);
+	ft_putendl("-----------");
+	queue_iter_back(ps->stack, dump_node);
+	ft_putendl("-----------");
+*/
+
 	return (ps);
 }
 

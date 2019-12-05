@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 16:18:20 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/28 21:35:24 by archid-          ###   ########.fr       */
+/*   Updated: 2019/12/05 18:15:07 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,31 +96,73 @@ void	adjust_stack(t_ps a, t_lst *ops, t_flags *flags)
 	free(arr.base);
 }
 
+enum e_ops_list_states
+{
+	FRONT_OPS,
+	REAR_OPS,
+	OPTIMAL_OPS
+};
+
+void		dump_node(t_qnode *e)
+{
+	t_ps_node *node;
+
+	if (!e)
+		return ;
+	node = e->blob;
+	ft_dprintf(2, "   %{green_fg}%+4d%{yellow_fg}"
+			   "[%+.2d]%{blue_fg}[%+.2d]%{reset}\n",
+			   node->value, node->a_cost, node->b_cost);
+}
+
 void	push_swap(t_ps a, t_ps b, t_lst *ops, t_flags *flags)
 {
 	t_ps_node	*node;
 	t_ps_array	arr;
-	t_lst		walk;
-	t_lst		tmp_ops[2];
+	t_qnode		*walk[2];
+	t_lst		tmp[3];
 	int			b_rots;
 
-	tmp_ops[0] = NULL;
+	tmp[OPTIMAL_OPS] = NULL;
 	ps_sort_few(a, b, ops);
+	ft_bzero(tmp, 3 * sizeof(t_lst));
 	while (b->len)
 	{
 		b_rots = 0;
-		walk = b->stack;
+		walk[FRONT_OPS] = b->stack->head->next;
+		walk[REAR_OPS] = b->stack->tail->prev;
+		/* queue_iter(b->stack, dump_node); */
+		/* ft_putendl("---"); */
+		/* queue_iter(a->stack, dump_node); */
+		/* getchar(); */
 		arr = ps_vals_asarray(a);
-		while (walk)
+		while (true)
 		{
-			tmp_ops[1] = gen_ops(arr, b, b_rots++, walk->content);
-			take_best_ops(&tmp_ops[0], &tmp_ops[1], &node, walk->content);
-			walk = walk->next;
+			/* ft_printf("+"); */
+			tmp[FRONT_OPS] = gen_ops(arr, b, b_rots++, walk[FRONT_OPS]->blob);
+			take_best_ops(&tmp[OPTIMAL_OPS], &tmp[FRONT_OPS], &node,
+						  walk[FRONT_OPS]->blob);
+
+			tmp[REAR_OPS] = gen_ops(arr, b, b->len - b_rots,
+										walk[REAR_OPS]->blob);
+			take_best_ops(&tmp[OPTIMAL_OPS], &tmp[REAR_OPS], &node,
+						  walk[REAR_OPS]->blob);
+
+			if ((int)ft_lstlen(tmp[OPTIMAL_OPS]) <= b_rots + 1)
+				break ;
+
+			/* two cases, either or even */
+			if (walk[FRONT_OPS]->next == walk[REAR_OPS]
+					|| walk[FRONT_OPS] == walk[REAR_OPS])
+				break;
+
+			walk[FRONT_OPS] = walk[FRONT_OPS]->next;
+			walk[REAR_OPS] = walk[REAR_OPS]->prev;
 		}
 		if (flags->verbose)
-			dump_state(a, b, tmp_ops[0], node);
+			dump_state(a, b, tmp[OPTIMAL_OPS], node);
 		free(arr.base);
-		append_ops(a, b, ops, &tmp_ops[0]);
+		append_ops(a, b, ops, &tmp[OPTIMAL_OPS]);
 	}
 	adjust_stack(a, ops, flags);
 }

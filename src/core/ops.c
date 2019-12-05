@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 00:05:21 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/27 13:54:05 by archid-          ###   ########.fr       */
+/*   Updated: 2019/12/05 15:47:43 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ bool	op_dopsh(t_ps dest, t_ps src)
 {
 	if (!dest || !src || !src->len)
 		return (false);
-	ft_lstadd(&dest->stack, ft_lstpeek(&src->stack));
+	queue_push_front(dest->stack, queue_deq(src->stack));
 	src->len--;
 	dest->len++;
 	return (true);
@@ -24,40 +24,34 @@ bool	op_dopsh(t_ps dest, t_ps src)
 
 bool	op_doswp(t_ps ps)
 {
-	t_lst foo;
-	t_lst bar;
+	t_qnode *foo;
+	t_qnode *bar;
 
 	if (!ps || ps->len < 2)
 		return (false);
-	foo = ft_lstpeek(&ps->stack);
-	bar = ft_lstpeek(&ps->stack);
-	ft_lstadd(&ps->stack, foo);
-	ft_lstadd(&ps->stack, bar);
+	foo = queue_deq(ps->stack);
+	bar = queue_deq(ps->stack);
+	queue_push_front(ps->stack, foo);
+	queue_push_front(ps->stack, bar);
 	return (true);
 }
 
 bool	op_dorot(t_ps ps, bool is_up)
 {
-	t_lst node;
-
 	if (!ps || ps->len < 2)
 		return (false);
 	if (is_up)
-		node = ft_lstpeek(&ps->stack);
+		queue_enq(ps->stack, queue_deq(ps->stack));
 	else
-		node = ft_lstpop(&ps->stack);
-	if (is_up)
-		ft_lstpush(&ps->stack, node);
-	else
-		ft_lstadd(&ps->stack, node);
+		queue_push_front(ps->stack, queue_pop(ps->stack));
 	return (true);
 }
 
-void	helper_op_dump(t_lst e)
+void	helper_op_dump(t_qnode *e)
 {
 	t_op *op;
 
-	op = e->content;
+	op = e->blob;
 	op_dump(*op);
 }
 

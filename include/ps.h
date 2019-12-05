@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:10:29 by archid-           #+#    #+#             */
-/*   Updated: 2019/11/28 15:10:52 by archid-          ###   ########.fr       */
+/*   Updated: 2019/12/05 15:37:22 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # define FEW_ELEMENTS							(3)
 
 # include "libft.h"
+# include "queue.h"
 
 # define GET_NODE(e)							((t_ps_node *)e->content)
 # define AS_NODE(obj)							((t_ps_node *)obj)
@@ -40,7 +41,7 @@ struct						s_ps_node
 struct						s_ps_ds
 {
 	char	symb;
-	t_lst	stack;
+	t_queue	*stack;
 	size_t	len;
 	size_t	size;
 };

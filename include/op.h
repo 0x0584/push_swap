@@ -6,7 +6,7 @@
 /*   By: archid- <archid-@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 03:16:37 by archid-           #+#    #+#             */
-/*   Updated: 2019/12/05 14:26:46 by archid-          ###   ########.fr       */
+/*   Updated: 2019/12/05 15:47:15 by archid-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ bool			op_dopsh(t_ps dest, t_ps src);
 bool			op_doswp(t_ps stack);
 bool			op_dorot(t_ps stack, bool is_up);
 
-void			helper_op_dump(t_lst e);
+void			helper_op_dump(t_qnode *e);
 void			take_best_ops(t_lst *opt, t_lst *tmp,
 								t_ps_node **anode, t_ps_node *current);
 void			append_ops(t_ps a, t_ps b, t_lst *ops, t_lst *new);
